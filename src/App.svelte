@@ -4,9 +4,10 @@
   import Counter from './lib/Counter.svelte'
 
 
-
+// Clock shown on user's page
 let clockLocalUserTimeShown
 let clockNumbersShown
+let clockNumbersMarsShown
 
 // Pad used for all clock
 function padForClock (){
@@ -22,6 +23,26 @@ function localTimeUser() {
   const localSecondUser = currentTimeEartUtc.getSeconds();
   clockLocalUserTimeShown = `${padForClock()(localHourUser)} : ${padForClock()(localMinuteUser)} : ${padForClock()(localSecondUser)}`;
   return clockLocalUserTimeShown
+};
+
+
+// Clock for Mars time based on the Julian Date and Mars Sol Date
+
+//Julian Date convertion
+function getJulianDate (date = new Date()) {
+  return (date.getTime() / 86400000) + 2440587.5;        // One Earth day = 86400000ms      Julian Date of the 1st January 1970 = 244587.5
+};
+
+//UTC to MTC convertion
+function clockMarsTime () {
+  const julianDate = getJulianDate();
+  const marsSolDay = (julianDate - 2405522.0028779) / 1.0274912517;
+  const marsTimeCoordinated = (marsSolDay % 1) *24;
+  const hoursOnMars = Math.floor(marsTimeCoordinated);
+  const minutesOnMars = Math.floor((marsTimeCoordinated % 1) * 60);
+  const secondOnMars = Math.floor((((marsTimeCoordinated % 1 )*60) % 1) * 60);
+  clockNumbersMarsShown = `${padForClock()(hoursOnMars)} : ${padForClock()(minutesOnMars)} : ${padForClock()(secondOnMars)}`;
+  return clockNumbersMarsShown;
 };
 
 
@@ -49,8 +70,11 @@ function clockNumbers () {
 // Time refresh set to 1s
 clockNumbers();
 localTimeUser();
+clockMarsTime();
+
 setInterval(clockNumbers, 1000);
 setInterval(localTimeUser, 1000);
+setInterval(clockMarsTime, 1000);
 
 
 </script>
@@ -58,6 +82,7 @@ setInterval(localTimeUser, 1000);
 <main>
   <p>{clockLocalUserTimeShown}</p>
   <p>{clockNumbersShown}</p>
+  <p>{clockNumbersMarsShown}</p>
   
 </main>
 
