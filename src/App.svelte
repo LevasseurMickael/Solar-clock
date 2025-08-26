@@ -7,10 +7,28 @@
 
 
 
-let clockNumbersShown  //clock seen on screen
+
+// Pad used for all clock
+function padForClock (){
+  const padWith0 = n => n.toString().padStart(2, "0");
+  return padWith0
+};
+
+// Clock for Earth time in user time zone
+function localTimeUser() {
+  const currentTimeEartUtc = new Date();
+  const localHourUser = currentTimeEartUtc.getHours();
+  const localMinuteUser = currentTimeEartUtc.getMinutes();
+  const localSecondUser = currentTimeEartUtc.getSeconds();
+  const clockLocalUserTimeShown = `${padForClock()(localHourUser)} : ${padForClock()(localMinuteUser)} : ${padForClock()(localSecondUser)}`;
+  return clockLocalUserTimeShown
+};
 
 
-//Clock Earth time
+
+
+
+//Clock solar system planets time convertion
 function clockNumbers () {
   const currentTimeEartUtc = new Date();
   const earthTimeUtcsecond = (currentTimeEartUtc.getTime()) / 1000;
@@ -19,8 +37,8 @@ function clockNumbers () {
   const hoursOnPlanet = Math.floor((currentPlanetTime % 86400) / 3600);
   const minutesOnPlanet = Math.floor((currentPlanetTime %3600) / 60);
   const secondOnPlanet = Math.floor(currentPlanetTime % 60);
-  const padWith0 = n => n.toString().padStart(2, "0");
-  clockNumbersShown = `${padWith0(hoursOnPlanet)} : ${padWith0(minutesOnPlanet)} : ${padWith0(secondOnPlanet)}`;
+  
+  const clockNumbersShown = `${padForClock()(hoursOnPlanet)} : ${padForClock()(minutesOnPlanet)} : ${padForClock()(secondOnPlanet)}`;
   return clockNumbersShown;
 }
 
@@ -31,13 +49,17 @@ function clockNumbers () {
 
 // Time refresh set to 1s
 clockNumbers();
+localTimeUser();
 setInterval(clockNumbers, 1000);
+setInterval(localTimeUser, 1000);
 
 
 </script>
 
 <main>
-  {clockNumbersShown}
+  <p>{localTimeUser()}</p>
+  <p>{clockNumbers()}</p>
+  
 </main>
 
 <style>
