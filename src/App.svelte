@@ -5,8 +5,8 @@
 
 
 
-
-
+let clockLocalUserTimeShown
+let clockNumbersShown
 
 // Pad used for all clock
 function padForClock (){
@@ -20,7 +20,7 @@ function localTimeUser() {
   const localHourUser = currentTimeEartUtc.getHours();
   const localMinuteUser = currentTimeEartUtc.getMinutes();
   const localSecondUser = currentTimeEartUtc.getSeconds();
-  const clockLocalUserTimeShown = `${padForClock()(localHourUser)} : ${padForClock()(localMinuteUser)} : ${padForClock()(localSecondUser)}`;
+  clockLocalUserTimeShown = `${padForClock()(localHourUser)} : ${padForClock()(localMinuteUser)} : ${padForClock()(localSecondUser)}`;
   return clockLocalUserTimeShown
 };
 
@@ -37,8 +37,7 @@ function clockNumbers () {
   const hoursOnPlanet = Math.floor((currentPlanetTime % 86400) / 3600);
   const minutesOnPlanet = Math.floor((currentPlanetTime %3600) / 60);
   const secondOnPlanet = Math.floor(currentPlanetTime % 60);
-  
-  const clockNumbersShown = `${padForClock()(hoursOnPlanet)} : ${padForClock()(minutesOnPlanet)} : ${padForClock()(secondOnPlanet)}`;
+  clockNumbersShown = `${padForClock()(hoursOnPlanet)} : ${padForClock()(minutesOnPlanet)} : ${padForClock()(secondOnPlanet)}`;
   return clockNumbersShown;
 }
 
@@ -57,8 +56,8 @@ setInterval(localTimeUser, 1000);
 </script>
 
 <main>
-  <p>{localTimeUser()}</p>
-  <p>{clockNumbers()}</p>
+  <p>{clockLocalUserTimeShown}</p>
+  <p>{clockNumbersShown}</p>
   
 </main>
 
