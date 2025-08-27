@@ -4,6 +4,37 @@
   import Counter from './lib/Counter.svelte'
 
 
+// Array of all planets
+
+const allPlanetsOfSolarSystem = [
+  {name: "Mercury",
+  dayTime: 5068960
+  },
+  {name: "Venus",
+  dayTime: 20995200
+  },
+  {name: "Earth",
+  dayTime: 1
+  },
+  {name: "Mars",
+  dayTime: 1
+  },
+  {name: "Jupiter",
+  dayTime: 35640
+  },
+  {name: "Saturn",
+  dayTime: 38520
+  },
+  {name: "Uranus",
+  dayTime: 61920
+  },
+  {name: "Neptune",
+  dayTime: 58000
+  },
+];
+
+
+
 // Clock shown on user's page
 let clockLocalUserTimeShown
 let clockNumbersShown
@@ -50,11 +81,11 @@ function clockMarsTime () {
 
 
 //Clock solar system planets time convertion
-function clockNumbers () {
+function clockNumbers (dayTimeOnPlanet) {
   const currentTimeEartUtc = new Date();
   const earthTimeUtcsecond = (currentTimeEartUtc.getTime()) / 1000;
-  const planetTime = earthTimeUtcsecond * 1;  //TODO change *1 by planets ratio
-  const currentPlanetTime = planetTime  //TODO change 1 by number of second per planet day
+  const planetTime = earthTimeUtcsecond * (dayTimeOnPlanet / 86400);
+  const currentPlanetTime = planetTime % dayTimeOnPlanet;
   const hoursOnPlanet = Math.floor((currentPlanetTime % 86400) / 3600);
   const minutesOnPlanet = Math.floor((currentPlanetTime %3600) / 60);
   const secondOnPlanet = Math.floor(currentPlanetTime % 60);
@@ -80,10 +111,20 @@ setInterval(clockMarsTime, 1000);
 </script>
 
 <main>
-  <p>{clockLocalUserTimeShown}</p>
-  <p>{clockNumbersShown}</p>
-  <p>{clockNumbersMarsShown}</p>
-  
+{#each allPlanetsOfSolarSystem as planet}
+  {#if planet.name === "Earth"}
+    <p>{planet.name}</p>
+    {localTimeUser()};
+  {:else if planet.name === "Mars"}
+    <p>{planet.name}</p>
+    {clockMarsTime()};
+    {:else}
+    <p>{planet.name}</p>
+    {clockNumbers()}
+  {/if}
+{/each }
+
+
 </main>
 
 <style>
