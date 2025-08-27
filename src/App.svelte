@@ -45,7 +45,7 @@ let allPlanetsOfSolarSystem = $state([
 
 
 
-let clocks = {};
+let clocks = $state({});
 
 
 // Clock shown on user's page
@@ -139,47 +139,91 @@ onMount(savedPlanetChoose)
 </script>
 
 <main>
+<container class="whole-page">
 
+    <article class="planets-clock">
+      {#each allPlanetsOfSolarSystem as planet}
+        {#if planet.name === "Earth" && planet.showClock === true}
+          <div class={planet.name}>
+            <p id="${planet.name}">{planet.name}</p>
+            {clockLocalUserTimeShown}
+          </div>
+        {:else if planet.name === "Mars" && planet.showClock === true}
+          <div class={planet.name}>
+            <p id="${planet.name}">{planet.name}</p>
+            {clockNumbersMarsShown}
+          </div>
+          {:else if planet.showClock === true}
+          <div class={planet.name}>
+            <p id="${planet.name}">{planet.name}</p>
+            {clocks[planet.name]}
+          </div>
+        {/if}
+      {/each }
+    </article>
 
-<fieldset>
-  <legend>Choose planet's clock</legend>
-  <div>
-  {#each allPlanetsOfSolarSystem as planet}
-    <div class="${planet.name}" >
-      <input type="checkbox" id="${planet.name}" name="${planet.name}" bind:checked={planet.showClock} onchange={savingPlanet}/>
-      <label for="${planet.name}">{planet.name}</label>
-    </div>
-  {/each}
-  </div>
-</fieldset>
-<button type="button" onclick={savingPlanet}>Save</button>
-
-{#each allPlanetsOfSolarSystem as planet}
-  {#if planet.name === "Earth" && planet.showClock === true}
-    <div>
-      <p id="${planet.name}">{planet.name}</p>
-      {clockLocalUserTimeShown}
-    </div>
-  {:else if planet.name === "Mars" && planet.showClock === true}
-    <div>
-      <p id="${planet.name}">{planet.name}</p>
-      {clockNumbersMarsShown}
-    </div>
-    {:else if planet.showClock === true}
-    <div>
-      <p id="${planet.name}">{planet.name}</p>
-      {clocks[planet.name]}
-    </div>
-  {/if}
-{/each }
-
-
+    <article class="planets-list-area">
+      <fieldset>
+        <legend>Choose planet's clock</legend>
+        <div class="planets-list">
+        {#each allPlanetsOfSolarSystem as planet}
+          <div class="${planet.name}" >
+            <input type="checkbox" id="${planet.name}" name="${planet.name}" bind:checked={planet.showClock} onchange={savingPlanet}/>
+            <label for="${planet.name}">{planet.name}</label>
+          </div>
+        {/each}
+        </div>
+      </fieldset>
+    </article>
+    
+  </container>
 </main>
 
 <style>
+
 main {
-  background-color: beige;
-  color: black;
-  font-size: 2rem;
+  background-color: black;
+  color: white;
+  font-size: 1.3rem;
+  line-height: 0.3rem;
+  height: 100vh;
+  width: 100vh;
+}
+
+.whole-page {
+  display: flex;
+  height: 25vh;
+  width: 100vh;
+justify-content: space-between;
+}
+
+.planets-clock {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: center;
+}
+
+.Mercury, .Venus, .Earth, .Mars, .Jupiter, .Saturn,.Uranus, .Neptune {
+  padding: 0.7rem 2rem 0.7rem 2rem;
+}
+
+.Mercury { color: #A9A9A9; }
+.Venus { color: #E6C229; }
+.Earth { color: #1DA1F2; }
+.Mars { color: #C1440E; }
+.Jupiter { color: #F7CC7F; }
+.Saturn { color: #F5CBA7; }
+.Uranus { color: #7FFFD4; }
+.Neptune { color: #1E90FF; }
+
+.planets-list-area {
+  font-size: 1rem;
+  line-height: 1rem;
+}
+.planets-list {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
 }
 </style>
