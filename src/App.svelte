@@ -2,12 +2,13 @@
   import svelteLogo from './assets/svelte.svg'
   import viteLogo from '/vite.svg'
   import Counter from './lib/Counter.svelte'
+  import {onMount} from "svelte"
 
 
 
 // Array of all planets
 
-const allPlanetsOfSolarSystem = $state([
+let allPlanetsOfSolarSystem = $state([
   {name: "Mercury",
   dayTime: 5068960,
   showClock: false
@@ -18,7 +19,7 @@ const allPlanetsOfSolarSystem = $state([
   },
   {name: "Earth",
   dayTime: 1,
-  showClock: false
+  showClock: true
   },
   {name: "Mars",
   dayTime: 1,
@@ -41,6 +42,8 @@ const allPlanetsOfSolarSystem = $state([
   showClock: false
   },
 ]);
+
+
 
 let clocks = {};
 
@@ -105,13 +108,8 @@ function clockNumbers () {
     const secondOnPlanet = Math.floor(currentPlanetTime % 60);
   clocks[planet.name] = `${padForClock()(hoursOnPlanet)} : ${padForClock()(minutesOnPlanet)} : ${padForClock()(secondOnPlanet)}`;
   })
-  
   return clockNumbersShown;
 };
-
-
-
-
 
 
 // Time refresh set to 1s
@@ -124,13 +122,19 @@ setInterval(localTimeUser, 1000);
 setInterval(clockMarsTime, 1000);
 
 
+// Localestorage to keep selected clock shown
 
-// // Toggle clock selected
-// function toggleClock (){
-//   if 
-// };
+function savingPlanet() {
+localStorage.setItem("planetChoosed", JSON.stringify(allPlanetsOfSolarSystem));
+};
 
+function savedPlanetChoose(){
+  const planetSettingString = localStorage.getItem("planetChoosed");
+  allPlanetsOfSolarSystem = JSON.parse(planetSettingString);
+  return allPlanetsOfSolarSystem
+};
 
+onMount(savedPlanetChoose)
 
 </script>
 
@@ -148,7 +152,7 @@ setInterval(clockMarsTime, 1000);
   {/each}
   </div>
 </fieldset>
-
+<button type="button" onclick={savingPlanet}>Save</button>
 
 {#each allPlanetsOfSolarSystem as planet}
   {#if planet.name === "Earth" && planet.showClock === true}
