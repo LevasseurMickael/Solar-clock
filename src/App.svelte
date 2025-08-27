@@ -7,46 +7,50 @@
 
 // Array of all planets
 
-const allPlanetsOfSolarSystem = [
+const allPlanetsOfSolarSystem = $state([
   {name: "Mercury",
-  dayTime: 5068960
+  dayTime: 5068960,
+  showClock: false
   },
   {name: "Venus",
-  dayTime: 20995200
+  dayTime: 20995200,
+  showClock: false
   },
   {name: "Earth",
-  dayTime: 1
+  dayTime: 1,
+  showClock: false
   },
   {name: "Mars",
-  dayTime: 1
+  dayTime: 1,
+  showClock: false
   },
   {name: "Jupiter",
-  dayTime: 35640
+  dayTime: 35640,
+  showClock: false
   },
   {name: "Saturn",
-  dayTime: 38520
+  dayTime: 38520,
+  showClock: false
   },
   {name: "Uranus",
-  dayTime: 61920
+  dayTime: 61920,
+  showClock: false
   },
   {name: "Neptune",
-  dayTime: 58000
+  dayTime: 58000,
+  showClock: false
   },
-];
+]);
 
 let clocks = {};
 
 
 // Clock shown on user's page
-let clockLocalUserTimeShown
-let clockNumbersShown
-let clockNumbersMarsShown
-// let clockMercury
-// let clockVenus
-// let clockJupiter
-// let clockSaturn
-// let clockUranus
-// let clockNeptune
+let clockLocalUserTimeShown = $state();
+let clockNumbersShown = $state();
+let clockNumbersMarsShown = $state();
+
+
 
 // Pad used for all clock
 function padForClock (){
@@ -121,21 +125,51 @@ setInterval(clockMarsTime, 1000);
 
 
 
+// // Toggle clock selected
+// function toggleClock (){
+//   if 
+// };
+
+
+
 </script>
 
 <main>
+
+
+<fieldset>
+  <legend>Choose planet's clock</legend>
+  <div>
+  {#each allPlanetsOfSolarSystem as planet}
+    <div class="${planet.name}" >
+      <input type="checkbox" id="${planet.name}" name="${planet.name}" bind:checked={planet.showClock}/>
+      <label for="${planet.name}">{planet.name}</label>
+    </div>
+  {/each}
+  </div>
+</fieldset>
+
+
 {#each allPlanetsOfSolarSystem as planet}
-  {#if planet.name === "Earth"}
-    <p>{planet.name}</p>
-    {clockLocalUserTimeShown}
-  {:else if planet.name === "Mars"}
-    <p>{planet.name}</p>
-    {clockNumbersMarsShown}
-    {:else}
-    <p>{planet.name}</p>
-    {clocks[planet.name]}
+  {#if planet.name === "Earth" && planet.showClock === true}
+    <div>
+      <p id="${planet.name}">{planet.name}</p>
+      {clockLocalUserTimeShown}
+    </div>
+  {:else if planet.name === "Mars" && planet.showClock === true}
+    <div>
+      <p id="${planet.name}">{planet.name}</p>
+      {clockNumbersMarsShown}
+    </div>
+    {:else if planet.showClock === true}
+    <div>
+      <p id="${planet.name}">{planet.name}</p>
+      {clocks[planet.name]}
+    </div>
   {/if}
 {/each }
+
+
 </main>
 
 <style>
