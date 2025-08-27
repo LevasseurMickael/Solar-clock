@@ -4,6 +4,7 @@
   import Counter from './lib/Counter.svelte'
 
 
+
 // Array of all planets
 
 const allPlanetsOfSolarSystem = [
@@ -33,12 +34,19 @@ const allPlanetsOfSolarSystem = [
   },
 ];
 
+let clocks = {};
 
 
 // Clock shown on user's page
 let clockLocalUserTimeShown
 let clockNumbersShown
 let clockNumbersMarsShown
+// let clockMercury
+// let clockVenus
+// let clockJupiter
+// let clockSaturn
+// let clockUranus
+// let clockNeptune
 
 // Pad used for all clock
 function padForClock (){
@@ -48,7 +56,7 @@ function padForClock (){
 
 // Clock for Earth time in user time zone
 function localTimeUser() {
-  const currentTimeEartUtc = new Date();
+  let currentTimeEartUtc = new Date();
   const localHourUser = currentTimeEartUtc.getHours();
   const localMinuteUser = currentTimeEartUtc.getMinutes();
   const localSecondUser = currentTimeEartUtc.getSeconds();
@@ -67,7 +75,7 @@ function getJulianDate (date = new Date()) {
 //UTC to MTC convertion
 function clockMarsTime () {
   const julianDate = getJulianDate();
-  const marsSolDay = (julianDate - 2405522.0028779) / 1.0274912517;
+  const marsSolDay = (julianDate - 2405522.0028779) / (1.0274912517);
   const marsTimeCoordinated = (marsSolDay % 1) *24;
   const hoursOnMars = Math.floor(marsTimeCoordinated);
   const minutesOnMars = Math.floor((marsTimeCoordinated % 1) * 60);
@@ -81,17 +89,21 @@ function clockMarsTime () {
 
 
 //Clock solar system planets time convertion
-function clockNumbers (dayTimeOnPlanet) {
-  const currentTimeEartUtc = new Date();
+function clockNumbers () {
+  let currentTimeEartUtc = new Date();
   const earthTimeUtcsecond = (currentTimeEartUtc.getTime()) / 1000;
-  const planetTime = earthTimeUtcsecond * (dayTimeOnPlanet / 86400);
-  const currentPlanetTime = planetTime % dayTimeOnPlanet;
-  const hoursOnPlanet = Math.floor((currentPlanetTime % 86400) / 3600);
-  const minutesOnPlanet = Math.floor((currentPlanetTime %3600) / 60);
-  const secondOnPlanet = Math.floor(currentPlanetTime % 60);
-  clockNumbersShown = `${padForClock()(hoursOnPlanet)} : ${padForClock()(minutesOnPlanet)} : ${padForClock()(secondOnPlanet)}`;
+
+  allPlanetsOfSolarSystem.forEach((planet) => {
+    const planetTime = earthTimeUtcsecond * (86400 / planet.dayTime);
+    const currentPlanetTime = planetTime % planet.dayTime;
+    const hoursOnPlanet = Math.floor((currentPlanetTime % 86400) / 3600);
+    const minutesOnPlanet = Math.floor((currentPlanetTime %3600) / 60);
+    const secondOnPlanet = Math.floor(currentPlanetTime % 60);
+  clocks[planet.name] = `${padForClock()(hoursOnPlanet)} : ${padForClock()(minutesOnPlanet)} : ${padForClock()(secondOnPlanet)}`;
+  })
+  
   return clockNumbersShown;
-}
+};
 
 
 
@@ -108,23 +120,22 @@ setInterval(localTimeUser, 1000);
 setInterval(clockMarsTime, 1000);
 
 
+
 </script>
 
 <main>
 {#each allPlanetsOfSolarSystem as planet}
   {#if planet.name === "Earth"}
     <p>{planet.name}</p>
-    {localTimeUser()};
+    {clockLocalUserTimeShown}
   {:else if planet.name === "Mars"}
     <p>{planet.name}</p>
-    {clockMarsTime()};
+    {clockNumbersMarsShown}
     {:else}
     <p>{planet.name}</p>
-    {clockNumbers()}
+    {clocks[planet.name]}
   {/if}
 {/each }
-
-
 </main>
 
 <style>
