@@ -146,7 +146,7 @@ onMount(savedPlanetChoose)
   <div>
   {#each allPlanetsOfSolarSystem as planet}
     <div class="${planet.name}" >
-      <input type="checkbox" id="${planet.name}" name="${planet.name}" bind:checked={planet.showClock}/>
+      <input type="checkbox" id="${planet.name}" name="${planet.name}" bind:checked={planet.showClock} onchange={savingPlanet}/>
       <label for="${planet.name}">{planet.name}</label>
     </div>
   {/each}
