@@ -22,7 +22,7 @@ let allPlanetsOfSolarSystem = $state([
   showClock: true,
   },
   {name: "Mars",
-  dayTime: 88642.663,
+  dayTime: 88775.244,
   showClock: false
   },
   {name: "Jupiter",
@@ -75,11 +75,6 @@ function localTimeUser() {
   const localMinuteUser = currentTimeEartUtc.getMinutes();
   const localSecondUser = currentTimeEartUtc.getSeconds();
   clockLocalUserTimeShown = `${padForClock()(localHourUser)} : ${padForClock()(localMinuteUser)} : ${padForClock()(localSecondUser)}`;
-  // const angle = (localSecondUser / 60) * 360;
-  // for (const planetRotate in planetRotation) {
-  //   planetRotate.style.transform = `rotate(${angle}deg)`;
-  // }
-  // return clockLocalUserTimeShown;
 };
 
 
@@ -112,12 +107,12 @@ function clockNumbers () {
   const earthTimeUtcsecond = (currentTimeEartUtc.getTime()) / 1000;
 
   allPlanetsOfSolarSystem.forEach((planet) => {
+    if(planet.name !== "Earth" && planet.name !== "Mars") {
     const planetTime = earthTimeUtcsecond * (86400 / planet.dayTime);
     const currentPlanetTime = planetTime % planet.dayTime;
     const hoursOnPlanet = Math.floor((currentPlanetTime % 86400) / 3600);
     const minutesOnPlanet = Math.floor((currentPlanetTime %3600) / 60);
     const secondOnPlanet = Math.floor(currentPlanetTime % 60);
-    if(planet.name !== "Earth" && planet.name !== "Mars") {
   clocks[planet.name] = `${padForClock()(hoursOnPlanet)} : ${padForClock()(minutesOnPlanet)} : ${padForClock()(secondOnPlanet)}`;
     }
   })
@@ -136,7 +131,7 @@ function planetsRotation () {
     const secondOnPlanet = Math.floor(currentPlanetTime % 60);
     angles[planet.name] = Math.floor((secondOnPlanet / 60) *360);
   })
-  return planetRotation
+  return planetRotation;
 };
 
 
@@ -162,7 +157,9 @@ setInterval(planetsRotation, 1000);
 // Localestorage to keep selected clock shown
 
 function savingPlanet() {
-localStorage.setItem("planetChoosed", JSON.stringify(allPlanetsOfSolarSystem));
+
+localStorage.setItem("planetChoosed", JSON.stringify(allPlanetsOfSolarSystem.map((showClock) => showClock)));
+console.log(localStorage.getItem("planetChoosed"));
 };
 
 function savedPlanetChoose(){
@@ -171,7 +168,7 @@ function savedPlanetChoose(){
   return allPlanetsOfSolarSystem
 };
 
-onMount(savedPlanetChoose)
+onMount(() => {if (localStorage.getItem("planetChoosed") !== null) {savedPlanetChoose()}})
 
 </script>
 
@@ -281,6 +278,9 @@ justify-content: space-between;
 }
 
 
+
+/* Planets rotation area */
+
 .planets-clocks {
   height: 75vh;
   display: flex;
@@ -288,6 +288,7 @@ justify-content: space-between;
   align-items: center;
   font-size: 0.75rem;
 }
+
 
 .Sun {
   display: flex;
@@ -320,38 +321,37 @@ justify-content: space-between;
 .all-planet-clock-Venus {
   position: absolute;
   margin-left: 100px;
-    transform-origin: -100px;
-
+  transform-origin: -100px;
 }
 .all-planet-clock-Earth {
   position: absolute;
   margin-left: 140px;
-    transform-origin: -140px;
+  transform-origin: -140px;
 }
 .all-planet-clock-Mars {
   position: absolute;
   margin-left: 170px;
-    transform-origin: -170px;
+  transform-origin: -170px;
 }
 .all-planet-clock-Jupiter {
   position: absolute;
   margin-left: 200px;
-    transform-origin: -200px;
+  transform-origin: -200px;
 }
 .all-planet-clock-Saturn {
   position: absolute;
   margin-left: 255px;
-    transform-origin: -255px;
+  transform-origin: -255px;
 }
 .all-planet-clock-Uranus {
   position: absolute;
   margin-left: 295px;
-    transform-origin: -295px;
+  transform-origin: -295px;
 }
 .all-planet-clock-Neptune {
   position: absolute;
   margin-left: 325px;
-    transform-origin: -325px;
+  transform-origin: -325px;
 }
 
 
