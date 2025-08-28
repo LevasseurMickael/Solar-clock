@@ -18,11 +18,11 @@ let allPlanetsOfSolarSystem = $state([
   showClock: false
   },
   {name: "Earth",
-  dayTime: 1,
-  showClock: true
+  dayTime: 86400,
+  showClock: true,
   },
   {name: "Mars",
-  dayTime: 1,
+  dayTime: 88642.663,
   showClock: false
   },
   {name: "Jupiter",
@@ -44,15 +44,22 @@ let allPlanetsOfSolarSystem = $state([
 ]);
 
 
+// 360deg = 43200
+// 1s = 360/43200 deg     or 1deg = 43200/360 s
+// planetRotation
+// angle = second / 60 * 360    to test
+// angle = getTime / 1000 / 2 / 43200 *360  when working
+// planetRotation.style.transform = `rotate(${angle}deg)`;
+
 
 let clocks = $state({});
-
+let angles = $state({});
 
 // Clock shown on user's page
 let clockLocalUserTimeShown = $state();
 let clockNumbersShown = $state();
 let clockNumbersMarsShown = $state();
-let planetRotation = $state({});
+let planetRotation = $state();
 
 
 // Pad used for all clock
@@ -68,7 +75,11 @@ function localTimeUser() {
   const localMinuteUser = currentTimeEartUtc.getMinutes();
   const localSecondUser = currentTimeEartUtc.getSeconds();
   clockLocalUserTimeShown = `${padForClock()(localHourUser)} : ${padForClock()(localMinuteUser)} : ${padForClock()(localSecondUser)}`;
-  return clockLocalUserTimeShown;
+  // const angle = (localSecondUser / 60) * 360;
+  // for (const planetRotate in planetRotation) {
+  //   planetRotate.style.transform = `rotate(${angle}deg)`;
+  // }
+  // return clockLocalUserTimeShown;
 };
 
 
@@ -106,13 +117,27 @@ function clockNumbers () {
     const hoursOnPlanet = Math.floor((currentPlanetTime % 86400) / 3600);
     const minutesOnPlanet = Math.floor((currentPlanetTime %3600) / 60);
     const secondOnPlanet = Math.floor(currentPlanetTime % 60);
+    if(planet.name !== "Earth" && planet.name !== "Mars") {
   clocks[planet.name] = `${padForClock()(hoursOnPlanet)} : ${padForClock()(minutesOnPlanet)} : ${padForClock()(secondOnPlanet)}`;
+    }
   })
-  return clockNumbersShown;
+  return clockNumbersShown
 };
 
 //Solar system rotation sync with time
 
+
+function planetsRotation () {
+  let currentTimeEartUtc = new Date();
+  const earthTimeUtcsecond = (currentTimeEartUtc.getTime()) / 1000;
+  allPlanetsOfSolarSystem.forEach((planet) => { 
+    const planetTime = earthTimeUtcsecond * (86400 / planet.dayTime);
+    const currentPlanetTime = planetTime % planet.dayTime;
+    const secondOnPlanet = Math.floor(currentPlanetTime % 60);
+    angles[planet.name] = Math.floor((secondOnPlanet / 60) *360);
+  })
+  return planetRotation
+};
 
 
 // 360deg = 43200
@@ -127,11 +152,12 @@ function clockNumbers () {
 clockNumbers();
 localTimeUser();
 clockMarsTime();
+planetsRotation();
 
 setInterval(clockNumbers, 1000);
 setInterval(localTimeUser, 1000);
 setInterval(clockMarsTime, 1000);
-
+setInterval(planetsRotation, 1000);
 
 // Localestorage to keep selected clock shown
 
@@ -197,7 +223,7 @@ onMount(savedPlanetChoose)
     
 
     {#each allPlanetsOfSolarSystem as planetTurning}
-          <div class="all-planet-clock-{planetTurning.name}" bind:this={planetRotation}>
+          <div class="all-planet-clock-{planetTurning.name}" style="transform: rotate({angles[planetTurning.name]}deg)">
           <button type="button" aria-label="{planetTurning.name} button" class="{planetTurning.name}-clock" id={planetTurning.name}></button>  
           <p>{planetTurning.name}</p>
           </div>
@@ -288,38 +314,44 @@ justify-content: space-between;
 
 .all-planet-clock-Mercury {
   position: absolute;
-  transform: translateX(65px);
-  transform-origin: center 100px;
-
+  margin-left: 65px;
+  transform-origin: -65px;
 }
 .all-planet-clock-Venus {
   position: absolute;
-  transform: translateX(100px);
+  margin-left: 100px;
+    transform-origin: -100px;
 
 }
 .all-planet-clock-Earth {
   position: absolute;
-  transform: translateX(135px);
+  margin-left: 140px;
+    transform-origin: -140px;
 }
 .all-planet-clock-Mars {
   position: absolute;
-  transform: translateX(170px);
+  margin-left: 170px;
+    transform-origin: -170px;
 }
 .all-planet-clock-Jupiter {
   position: absolute;
-  transform: translateX(200px);
+  margin-left: 200px;
+    transform-origin: -200px;
 }
 .all-planet-clock-Saturn {
   position: absolute;
-  transform: translateX(255px);
+  margin-left: 255px;
+    transform-origin: -255px;
 }
 .all-planet-clock-Uranus {
   position: absolute;
-  transform: translateX(295px);
+  margin-left: 295px;
+    transform-origin: -295px;
 }
 .all-planet-clock-Neptune {
   position: absolute;
-  transform: translateX(325px);
+  margin-left: 325px;
+    transform-origin: -325px;
 }
 
 
