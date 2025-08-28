@@ -139,23 +139,22 @@ onMount(savedPlanetChoose)
 </script>
 
 <main>
-<container class="whole-page">
-
+<container class="clock-and-selector">
     <article class="planets-clock">
       {#each allPlanetsOfSolarSystem as planet}
         {#if planet.name === "Earth" && planet.showClock === true}
           <div class={planet.name}>
-            <p id="${planet.name}">{planet.name}</p>
+            <p>{planet.name}</p>
             {clockLocalUserTimeShown}
           </div>
         {:else if planet.name === "Mars" && planet.showClock === true}
           <div class={planet.name}>
-            <p id="${planet.name}">{planet.name}</p>
+            <p>{planet.name}</p>
             {clockNumbersMarsShown}
           </div>
           {:else if planet.showClock === true}
           <div class={planet.name}>
-            <p id="${planet.name}">{planet.name}</p>
+            <p>{planet.name}</p>
             {clocks[planet.name]}
           </div>
         {/if}
@@ -168,14 +167,29 @@ onMount(savedPlanetChoose)
         <div class="planets-list">
         {#each allPlanetsOfSolarSystem as planet}
           <div class="${planet.name}" >
-            <input type="checkbox" id="${planet.name}" name="${planet.name}" bind:checked={planet.showClock} onchange={savingPlanet}/>
+            <input type="checkbox" name="${planet.name}" bind:checked={planet.showClock} onchange={savingPlanet}/>
             <label for="${planet.name}">{planet.name}</label>
           </div>
         {/each}
         </div>
       </fieldset>
     </article>
-    
+  </container>
+
+
+  <container class="planets-clocks">
+    <div class="Sun">
+      <button type="button" aria-label="sun button" id="sun-button"></button>
+      <p>Sun</p>
+    </div>
+
+    {#each allPlanetsOfSolarSystem as planetTurning}
+          <div class="all-planet-clock">
+          <button type="button" aria-label="{planetTurning.name} button" class="{planetTurning.name}-clock"></button>  
+          <p>{planetTurning.name}</p>
+          </div>
+        {/each}
+
   </container>
 </main>
 
@@ -190,7 +204,7 @@ main {
   width: 100vh;
 }
 
-.whole-page {
+.clock-and-selector {
   display: flex;
   height: 25vh;
   width: 100vh;
@@ -226,4 +240,88 @@ justify-content: space-between;
   flex-direction: column;
   align-items: start;
 }
+
+
+.planets-clocks {
+  height: 75vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.75rem;
+}
+
+
+#sun-button {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  background-color: #E6C229;
+  padding: 0;
+}
+
+.Mercury-clock {
+  background-color: #A9A9A9;
+  padding: 0;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+}
+
+.Venus-clock {
+  background-color: #E6C229;
+  padding: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+}
+
+.Earth-clock {
+  background-color: #1DA1F2;
+  padding: 0;
+  height: 22px;
+  width: 22px;
+  border-radius: 50%;
+}
+
+.Mars-clock {
+  background-color: #C1440E;
+  padding: 0;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+}
+
+.Jupiter-clock {
+  background-color: #F7CC7F;
+  padding: 0;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+}
+
+.Saturn-clock {
+  background-color: #F5CBA7;
+  padding: 0;
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+}
+
+.Uranus-clock {
+  background-color: #7FFFD4;
+  padding: 0;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+}
+
+.Neptune-clock {
+  background-color: #1E90FF;
+  padding: 0;
+  height: 17px;
+  width: 17px;
+  border-radius: 50%;
+}
+
 </style>
