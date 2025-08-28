@@ -52,13 +52,13 @@ let clocks = $state({});
 let clockLocalUserTimeShown = $state();
 let clockNumbersShown = $state();
 let clockNumbersMarsShown = $state();
-
+let planetRotation = $state({});
 
 
 // Pad used for all clock
 function padForClock (){
   const padWith0 = n => n.toString().padStart(2, "0");
-  return padWith0
+  return padWith0;
 };
 
 // Clock for Earth time in user time zone
@@ -68,7 +68,7 @@ function localTimeUser() {
   const localMinuteUser = currentTimeEartUtc.getMinutes();
   const localSecondUser = currentTimeEartUtc.getSeconds();
   clockLocalUserTimeShown = `${padForClock()(localHourUser)} : ${padForClock()(localMinuteUser)} : ${padForClock()(localSecondUser)}`;
-  return clockLocalUserTimeShown
+  return clockLocalUserTimeShown;
 };
 
 
@@ -110,6 +110,17 @@ function clockNumbers () {
   })
   return clockNumbersShown;
 };
+
+//Solar system rotation sync with time
+
+
+
+// 360deg = 43200
+// 1s = 360/43200 deg     or 1deg = 43200/360 s
+// planetRotation
+// angle = second / 60 * 360    to test
+// angle = getTime / 1000 / 2 / 43200 *360  when working
+// planetRotation.style.transform = `rotate(${angle}deg)`;
 
 
 // Time refresh set to 1s
@@ -186,8 +197,8 @@ onMount(savedPlanetChoose)
     
 
     {#each allPlanetsOfSolarSystem as planetTurning}
-          <div class="all-planet-clock-{planetTurning.name}">
-          <button type="button" aria-label="{planetTurning.name} button" class="{planetTurning.name}-clock"></button>  
+          <div class="all-planet-clock-{planetTurning.name}" bind:this={planetRotation}>
+          <button type="button" aria-label="{planetTurning.name} button" class="{planetTurning.name}-clock" id={planetTurning.name}></button>  
           <p>{planetTurning.name}</p>
           </div>
         {/each}
@@ -278,6 +289,8 @@ justify-content: space-between;
 .all-planet-clock-Mercury {
   position: absolute;
   transform: translateX(65px);
+  transform-origin: center 100px;
+
 }
 .all-planet-clock-Venus {
   position: absolute;
