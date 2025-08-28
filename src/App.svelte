@@ -179,17 +179,19 @@ onMount(savedPlanetChoose)
 
   <container class="planets-clocks">
     <div class="Sun">
-      <button type="button" aria-label="sun button" id="sun-button"></button>
-      <p>Sun</p>
-    </div>
+      <div class="sun-button-all">
+        <button type="button" aria-label="sun button" class="sun-button"></button>
+        <p>Sun</p>
+      </div>
+    
 
     {#each allPlanetsOfSolarSystem as planetTurning}
-          <div class="all-planet-clock">
+          <div class="all-planet-clock-{planetTurning.name}">
           <button type="button" aria-label="{planetTurning.name} button" class="{planetTurning.name}-clock"></button>  
           <p>{planetTurning.name}</p>
           </div>
         {/each}
-
+    </div>
   </container>
 </main>
 
@@ -247,18 +249,69 @@ justify-content: space-between;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
   font-size: 0.75rem;
 }
 
+.Sun {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
 
-#sun-button {
+.sun-button-all{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sun-button {
   height: 60px;
   width: 60px;
   border-radius: 50%;
   background-color: #E6C229;
   padding: 0;
 }
+
+
+
+
+.all-planet-clock-Mercury {
+  position: absolute;
+  transform: translateX(65px);
+}
+.all-planet-clock-Venus {
+  position: absolute;
+  transform: translateX(100px);
+
+}
+.all-planet-clock-Earth {
+  position: absolute;
+  transform: translateX(135px);
+}
+.all-planet-clock-Mars {
+  position: absolute;
+  transform: translateX(170px);
+}
+.all-planet-clock-Jupiter {
+  position: absolute;
+  transform: translateX(200px);
+}
+.all-planet-clock-Saturn {
+  position: absolute;
+  transform: translateX(255px);
+}
+.all-planet-clock-Uranus {
+  position: absolute;
+  transform: translateX(295px);
+}
+.all-planet-clock-Neptune {
+  position: absolute;
+  transform: translateX(325px);
+}
+
+
+
+
 
 .Mercury-clock {
   background-color: #A9A9A9;
