@@ -133,7 +133,7 @@ function planetsRotation () {
     } else if (planet.name === "Earth") {
       angles[planet.name] = ((currentPlanetTime + 7200)/ 43200) * 360;
     } else {
-      angles[planet.name] = ((currentPlanetTime - 34127 + 7200) / 43200) * 360;  
+      angles[planet.name] = ((currentPlanetTime - (((earthTimeUtcsecond / 86400) + 2440587.5 - 2405522.0028779) / 0.010274912517) + 7200) / 43200) * 360;  
     }
   });
   return planetRotation;
