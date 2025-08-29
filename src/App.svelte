@@ -128,17 +128,24 @@ function planetsRotation () {
   allPlanetsOfSolarSystem.forEach((planet) => { 
     const planetTime = earthTimeUtcsecond * (86400 / planet.dayTime);
     const currentPlanetTime = planetTime % planet.dayTime;
-    const secondOnPlanet = Math.floor(currentPlanetTime % 60);
-    angles[planet.name] = Math.floor((secondOnPlanet / 60) *360);
-  })
+    if (planet.name !== "Earth" && planet.name !== "Mars") {
+      angles[planet.name] = (currentPlanetTime / 43200) * 360;
+    } else if (planet.name === "Earth") {
+      angles[planet.name] = ((currentPlanetTime + 7200)/ 43200) * 360;
+    } else {
+      angles[planet.name] = ((currentPlanetTime - 34127 + 7200) / 43200) * 360;  
+    }
+  });
   return planetRotation;
 };
 
 
-// 360deg = 43200
+// 360deg = planet.dayTime
+//   1deg = planet1deg
 // 1s = 360/43200 deg     or 1deg = 43200/360 s
 // planetRotation
 // angle = second / 60 * 360    to test
+//     angles[planet.name] = (currentPlanetTime * (360 / planet.dayTime)) % 360;
 // angle = getTime / 1000 / 2 / 43200 *360  when working
 // planetRotation.style.transform = `rotate(${angle}deg)`;
 
@@ -215,7 +222,7 @@ onMount(() => {if (localStorage.getItem("planetChoosed") !== null) {savedPlanetC
     <div class="Sun">
       <div class="sun-button-all">
         <button type="button" aria-label="sun button" class="sun-button"></button>
-        <p>Sun</p>
+        <p class="sun-name">Sun</p>
       </div>
     
 
@@ -294,14 +301,16 @@ justify-content: space-between;
 
 .Sun {
   display: flex;
-  align-items: center;
   position: relative;
+  transform: rotate(-90deg);
+  align-content: center;
 }
 
 .sun-button-all{
   display: flex;
   flex-direction: column;
   justify-content: center;
+  
 }
 
 .sun-button {
@@ -312,7 +321,7 @@ justify-content: space-between;
   padding: 0;
 }
 
-
+.sun-name {color: #E6C229;}
 
 
 .all-planet-clock-Mercury {
