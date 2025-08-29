@@ -129,11 +129,12 @@ function planetsRotation () {
     const planetTime = earthTimeUtcsecond * (86400 / planet.dayTime);
     const currentPlanetTime = planetTime % planet.dayTime;
     if (planet.name !== "Earth" && planet.name !== "Mars") {
-      angles[planet.name] = (currentPlanetTime / 43200) * 360;
+      angles[planet.name] = (((currentPlanetTime / 43200) * 360) % 360);
     } else if (planet.name === "Earth") {
-      angles[planet.name] = ((currentPlanetTime + 7200)/ 43200) * 360;
+      angles[planet.name] = ((((currentPlanetTime + 7200)/ 43200) * 360) % 360);
     } else {
-      angles[planet.name] = ((currentPlanetTime - (((earthTimeUtcsecond / 86400) + 2440587.5 - 2405522.0028779) / 0.010274912517) + 7200) / 43200) * 360;  
+      const marsSol = (((earthTimeUtcsecond / 86400) + 2440.5875 - 2405.5220028779) / 1.0274912517);
+      angles[planet.name] = ((((marsSol * 3600) / 43200) * 360) % 360);  
     }
   });
   return planetRotation;
