@@ -305,7 +305,7 @@ justify-content: space-between;
   background-size: 80%;
   background-position-x: center;
   background-position-y: center;
-  background-image: url(./assets/82413b8c-1200-4242-b46c-7ec699af7864.58b83b25eada112a9c8c5527bd710eb7.png);
+  background-image: url(./assets/pngwing.com.png);
 }
 
 .Sun {
