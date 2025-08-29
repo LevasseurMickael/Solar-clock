@@ -172,7 +172,7 @@ onMount(() => {if (localStorage.getItem("planetChoosed") !== null) {savedPlanetC
 
 </script>
 
-<main>
+<main class="clock-all-page">
 <container class="clock-and-selector">
     <article class="planets-clock">
       {#each allPlanetsOfSolarSystem as planet}
@@ -221,8 +221,10 @@ onMount(() => {if (localStorage.getItem("planetChoosed") !== null) {savedPlanetC
 
     {#each allPlanetsOfSolarSystem as planetTurning}
           <div class="all-planet-clock-{planetTurning.name}" style="transform: rotate({angles[planetTurning.name]}deg)">
-          <button type="button" aria-label="{planetTurning.name} button" class="{planetTurning.name}-clock" id={planetTurning.name}></button>  
-          <p>{planetTurning.name}</p>
+            <div class="planet-text" style="transform: rotate(-{angles[planetTurning.name]}deg)">
+              <button type="button" aria-label="{planetTurning.name} button" class="{planetTurning.name}-clock" id={planetTurning.name}></button>
+              <p class="{planetTurning.name}-name">{planetTurning.name}</p>
+            </div>
           </div>
         {/each}
     </div>
@@ -232,7 +234,7 @@ onMount(() => {if (localStorage.getItem("planetChoosed") !== null) {savedPlanetC
 <style>
 
 main {
-  background-color: black;
+  background-image: url(./assets/a3aad14fdb499346d74950a51429026a.jpg);
   color: white;
   font-size: 1.3rem;
   line-height: 0.3rem;
@@ -258,14 +260,14 @@ justify-content: space-between;
   padding: 0.7rem 2rem 0.7rem 2rem;
 }
 
-.Mercury { color: #A9A9A9; }
-.Venus { color: #E6C229; }
-.Earth { color: #1DA1F2; }
-.Mars { color: #C1440E; }
-.Jupiter { color: #F7CC7F; }
-.Saturn { color: #F5CBA7; }
-.Uranus { color: #7FFFD4; }
-.Neptune { color: #1E90FF; }
+.Mercury, .Mercury-name { color: #A9A9A9; }
+.Venus, .Venus-name { color: #E6C229; }
+.Earth, .Earth-name { color: #1DA1F2; }
+.Mars, .Mars-name { color: #C1440E; }
+.Jupiter, .Jupiter-name { color: #F7CC7F; }
+.Saturn, .Saturn-name { color: #F5CBA7; }
+.Uranus, .Uranus-name { color: #7FFFD4; }
+.Neptune, .Neptune-name { color: #1E90FF; }
 
 .planets-list-area {
   font-size: 1rem;
