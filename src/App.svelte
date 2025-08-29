@@ -22,7 +22,7 @@ let allPlanetsOfSolarSystem = $state([
   showClock: true,
   },
   {name: "Mars",
-  dayTime: 88775.244,
+  dayTime: 88642.663 ,
   showClock: false
   },
   {name: "Jupiter",
@@ -105,7 +105,6 @@ function clockMarsTime () {
 function clockNumbers () {
   let currentTimeEartUtc = new Date();
   const earthTimeUtcsecond = (currentTimeEartUtc.getTime()) / 1000;
-
   allPlanetsOfSolarSystem.forEach((planet) => {
     if(planet.name !== "Earth" && planet.name !== "Mars") {
     const planetTime = earthTimeUtcsecond * (86400 / planet.dayTime);
@@ -131,10 +130,16 @@ function planetsRotation () {
     if (planet.name !== "Earth" && planet.name !== "Mars") {
       angles[planet.name] = (((currentPlanetTime / 43200) * 360) % 360);
     } else if (planet.name === "Earth") {
-      angles[planet.name] = ((((currentPlanetTime + 7200)/ 43200) * 360) % 360);
+      const localHourUser = currentTimeEartUtc.getHours();
+      const localMinuteUser = currentTimeEartUtc.getMinutes();
+      const localSecondUser = currentTimeEartUtc.getSeconds();
+      const localTimeUser = (localHourUser * 3600) + (localMinuteUser * 60) + (localSecondUser);
+      angles[planet.name] = ((((localTimeUser)/ 43200) * 360) % 360);
     } else {
-      const marsSol = (((earthTimeUtcsecond / 86400) + 2440.5875 - 2405.5220028779) / 1.0274912517);
-      angles[planet.name] = ((((marsSol * 3600) / 43200) * 360) % 360);  
+      const julianDate = getJulianDate();
+      const marsSolDay = (julianDate - 2405522.0028779) / (1.0274912517);
+      const marsTimeCoordinated = (marsSolDay % 1) *24;
+      angles[planet.name] = ((((marsTimeCoordinated * (88642.663 / 24)) / 43200) * 360) % 360);  
     }
   });
   return planetRotation;
