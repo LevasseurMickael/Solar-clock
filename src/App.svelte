@@ -222,6 +222,7 @@ onMount(() => {if (localStorage.getItem("planetChoosed") !== null) {savedPlanetC
   <container class="planets-clocks">
     <div class="Sun">
       <div class="sun-button-all">
+        <div class="clockpic"></div>
         <button type="button" aria-label="sun button" class="sun-button"></button>
         <p class="sun-name">Sun</p>
       </div>
@@ -229,9 +230,11 @@ onMount(() => {if (localStorage.getItem("planetChoosed") !== null) {savedPlanetC
 
     {#each allPlanetsOfSolarSystem as planetTurning}
           <div class="all-planet-clock-{planetTurning.name}" style="transform: rotate({angles[planetTurning.name]}deg)">
-            <div class="planet-text" style="transform: rotate(-{angles[planetTurning.name]}deg)">
-              <button type="button" aria-label="{planetTurning.name} button" class="{planetTurning.name}-clock" id={planetTurning.name}></button>
-              <p class="{planetTurning.name}-name">{planetTurning.name}</p>
+            <div class="planet-and-text">
+              <div class="planet-text" style="transform: rotate(-{angles[planetTurning.name]}deg)">
+                <button type="button" aria-label="{planetTurning.name} button" class="{planetTurning.name}-clock" id={planetTurning.name}></button>
+                <p class="{planetTurning.name}-name">{planetTurning.name}</p>
+              </div>
             </div>
           </div>
         {/each}
@@ -297,22 +300,28 @@ justify-content: space-between;
   justify-content: center;
   align-items: center;
   font-size: 0.75rem;
+    background-repeat: no-repeat;
+  background-size: cover;
+  background-size: 80%;
+  background-position-x: center;
+  background-position-y: center;
+  background-image: url(./assets/82413b8c-1200-4242-b46c-7ec699af7864.58b83b25eada112a9c8c5527bd710eb7.png);
 }
-
 
 .Sun {
   display: flex;
   position: relative;
-  transform: rotate(-90deg);
-  align-content: center;
+  transform: rotate(-90deg) translate(50px);
+  align-items: center;
 }
 
 .sun-button-all{
   display: flex;
   flex-direction: column;
   justify-content: center;
-  
+  transform: rotate(90deg);
 }
+
 
 .sun-button {
   height: 60px;
@@ -324,6 +333,10 @@ justify-content: space-between;
 
 .sun-name {color: #E6C229;}
 
+.planet-and-text {
+  transform: rotate(90deg);
+
+}
 
 .all-planet-clock-Mercury {
   position: absolute;
