@@ -172,7 +172,6 @@ setInterval(planetsRotation, 1000);
 function savingPlanet() {
 
 localStorage.setItem("planetChoosed", JSON.stringify(allPlanetsOfSolarSystem.map((showClock) => showClock)));
-console.log(localStorage.getItem("planetChoosed"));
 };
 
 function savedPlanetChoose(){
