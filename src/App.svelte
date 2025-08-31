@@ -44,13 +44,6 @@ let allPlanetsOfSolarSystem = $state([
 ]);
 
 
-// 360deg = 43200
-// 1s = 360/43200 deg     or 1deg = 43200/360 s
-// planetRotation
-// angle = second / 60 * 360    to test
-// angle = getTime / 1000 / 2 / 43200 *360  when working
-// planetRotation.style.transform = `rotate(${angle}deg)`;
-
 
 let clocks = $state({});
 let angles = $state({});
@@ -60,6 +53,10 @@ let clockLocalUserTimeShown = $state();
 let clockNumbersShown = $state();
 let clockNumbersMarsShown = $state();
 let planetRotation = $state();
+let menuFieldset = $state({
+  displayPlanets: "block",
+  displaySettings: "none"
+});
 
 
 // Pad used for all clock
@@ -99,8 +96,6 @@ function clockMarsTime () {
 
 
 
-
-
 //Clock solar system planets time convertion
 function clockNumbers () {
   let currentTimeEartUtc = new Date();
@@ -117,6 +112,7 @@ function clockNumbers () {
   })
   return clockNumbersShown
 };
+
 
 //Solar system rotation sync with time
 
@@ -145,15 +141,17 @@ function planetsRotation () {
   return planetRotation;
 };
 
-
-// 360deg = planet.dayTime
-//   1deg = planet1deg
-// 1s = 360/43200 deg     or 1deg = 43200/360 s
-// planetRotation
-// angle = second / 60 * 360    to test
-//     angles[planet.name] = (currentPlanetTime * (360 / planet.dayTime)) % 360;
-// angle = getTime / 1000 / 2 / 43200 *360  when working
-// planetRotation.style.transform = `rotate(${angle}deg)`;
+// Tabs selection handle
+function handleOpenTabselected(tabSelected) {
+  if(tabSelected === "planets") {
+    menuFieldset.displayPlanets = "block";
+    menuFieldset.displaySettings = "none";
+  } else if (tabSelected === "settings") {
+    menuFieldset.displayPlanets = "none";
+    menuFieldset.displaySettings= "block";
+  };
+  return menuFieldset
+};
 
 
 // Time refresh set to 1s
@@ -208,8 +206,16 @@ onMount(() => {if (localStorage.getItem("planetChoosed") !== null) {savedPlanetC
     </article>
 
     <article class="planets-list-area">
-      <fieldset>
-        <legend>Choose planet's clock</legend>
+      <!-- Tabs menu -->
+      <div class="menu-tabs">
+        <!-- <button type="button" class="convselectorbutton" onclick={() => handleSwitchConvOnClick(convOnGoingSaved.id)}>{convOnGoingSaved.name}</button>  -->
+        <button type="button" class="tab-links" id="planets-id" aria-label="planets tab" onclick={() => handleOpenTabselected("planets")}>Planets</button>
+        <button type="button" class="tab-links" id="tab-id" aria-label="settings tab" onclick={() => handleOpenTabselected("settings")}>Settings</button>
+      </div>
+
+      <!-- Planets clocks to show menu -->
+      <fieldset class= "planetsFieldset" style="display: {menuFieldset.displayPlanets}">
+        <legend>Planet's clock</legend>
         <div class="planets-list">
         {#each allPlanetsOfSolarSystem as planet}
           <div class="${planet.name}" >
@@ -219,6 +225,14 @@ onMount(() => {if (localStorage.getItem("planetChoosed") !== null) {savedPlanetC
         {/each}
         </div>
       </fieldset>
+
+      <!-- Settings menu -->
+      <fieldset class= "settingsFieldset" style="display: {menuFieldset.displaySettings}">
+        <legend>Settings</legend>
+        <div>
+        </div>
+      </fieldset>
+      
     </article>
   </container>
 
