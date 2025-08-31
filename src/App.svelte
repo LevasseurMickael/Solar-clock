@@ -199,6 +199,7 @@ function savedPlanetChoose(){
   allPlanetsOfSolarSystem = JSON.parse(planetSettingString);
   const settingsSavedLocaly = localStorage.getItem("settings");
   settingsMemory = JSON.parse(settingsSavedLocaly);
+  console.log(settingsMemory);
 };
 
 onMount(() => {if (localStorage.getItem("planetChoosed") !== null) {savedPlanetChoose()}})
