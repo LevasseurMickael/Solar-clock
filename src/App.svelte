@@ -257,7 +257,7 @@ onMount(() => {if (localStorage.getItem("settings") !== null) {savedPlanetChoose
         <div>
           <label for="clock-type">Clock convert</label>
           <select name="clock-convert" id="clock-type" bind:value={settingsMemory.timeChart} onchange= {savingSettings}>
-            <option value="24h-time">24h</option>
+            <option value="24h-time" selected>24h</option>
             <option value="12h-time">12h</option>
           </select>
         </div>
