@@ -57,6 +57,9 @@ let menuFieldset = $state({
   displayPlanets: "block",
   displaySettings: "none"
 });
+let settingsMemory = $state({
+  timeChart: "24h-time",
+});
 
 
 // Pad used for all clock
@@ -65,14 +68,29 @@ function padForClock (){
   return padWith0;
 };
 
+// Time chart change 24h 12h
+function timeChartSwitch(planetHours) {
+  if (settingsMemory.timeChart === "24h-time") {
+  const timeChartChange = planetHours;
+  return timeChartChange
+  }else {
+    const timeChartChange = planetHours % 12;
+    return timeChartChange
+  }
+};
+
 // Clock for Earth time in user time zone
 function localTimeUser() {
   let currentTimeEartUtc = new Date();
   const localHourUser = currentTimeEartUtc.getHours();
   const localMinuteUser = currentTimeEartUtc.getMinutes();
   const localSecondUser = currentTimeEartUtc.getSeconds();
-  clockLocalUserTimeShown = `${padForClock()(localHourUser)} : ${padForClock()(localMinuteUser)} : ${padForClock()(localSecondUser)}`;
+  clockLocalUserTimeShown = `${padForClock()(timeChartSwitch(localHourUser))} : ${padForClock()(localMinuteUser)} : ${padForClock()(localSecondUser)}`;
+
 };
+
+
+
 
 
 // Clock for Mars time based on the Julian Date and Mars Sol Date
@@ -90,7 +108,7 @@ function clockMarsTime () {
   const hoursOnMars = Math.floor(marsTimeCoordinated);
   const minutesOnMars = Math.floor((marsTimeCoordinated % 1) * 60);
   const secondOnMars = Math.floor((((marsTimeCoordinated % 1 )*60) % 1) * 60);
-  clockNumbersMarsShown = `${padForClock()(hoursOnMars)} : ${padForClock()(minutesOnMars)} : ${padForClock()(secondOnMars)}`;
+  clockNumbersMarsShown = `${padForClock()(timeChartSwitch(hoursOnMars))} : ${padForClock()(minutesOnMars)} : ${padForClock()(secondOnMars)}`;
   return clockNumbersMarsShown;
 };
 
@@ -107,7 +125,8 @@ function clockNumbers () {
     const hoursOnPlanet = Math.floor((currentPlanetTime % 86400) / 3600);
     const minutesOnPlanet = Math.floor((currentPlanetTime %3600) / 60);
     const secondOnPlanet = Math.floor(currentPlanetTime % 60);
-  clocks[planet.name] = `${padForClock()(hoursOnPlanet)} : ${padForClock()(minutesOnPlanet)} : ${padForClock()(secondOnPlanet)}`;
+
+  clocks[planet.name] = `${padForClock()(timeChartSwitch(hoursOnPlanet))} : ${padForClock()(minutesOnPlanet)} : ${padForClock()(secondOnPlanet)}`;
     }
   })
   return clockNumbersShown
@@ -183,6 +202,7 @@ onMount(() => {if (localStorage.getItem("planetChoosed") !== null) {savedPlanetC
 </script>
 
 <main class="clock-all-page">
+  <!--  -->
 <container class="clock-and-selector">
     <article class="planets-clock">
       {#each allPlanetsOfSolarSystem as planet}
@@ -208,7 +228,6 @@ onMount(() => {if (localStorage.getItem("planetChoosed") !== null) {savedPlanetC
     <article class="planets-list-area">
       <!-- Tabs menu -->
       <div class="menu-tabs">
-        <!-- <button type="button" class="convselectorbutton" onclick={() => handleSwitchConvOnClick(convOnGoingSaved.id)}>{convOnGoingSaved.name}</button>  -->
         <button type="button" class="tab-links" id="planets-id" aria-label="planets tab" onclick={() => handleOpenTabselected("planets")}>Planets</button>
         <button type="button" class="tab-links" id="tab-id" aria-label="settings tab" onclick={() => handleOpenTabselected("settings")}>Settings</button>
       </div>
@@ -226,10 +245,16 @@ onMount(() => {if (localStorage.getItem("planetChoosed") !== null) {savedPlanetC
         </div>
       </fieldset>
 
+
       <!-- Settings menu -->
       <fieldset class= "settingsFieldset" style="display: {menuFieldset.displaySettings}">
         <legend>Settings</legend>
         <div>
+          <label for="clock-type">Clock convert</label>
+          <select name="clock-convert" id="clock-type" bind:value={settingsMemory.timeChart}>
+            <option value="24h-time">24h</option>
+            <option value="12h-time">12h</option>
+          </select>
         </div>
       </fieldset>
       
@@ -237,6 +262,7 @@ onMount(() => {if (localStorage.getItem("planetChoosed") !== null) {savedPlanetC
   </container>
 
 
+<!-- planets watch type clock area -->
   <container class="planets-clocks">
     <div class="Sun">
       <div class="sun-button-all">
@@ -245,7 +271,6 @@ onMount(() => {if (localStorage.getItem("planetChoosed") !== null) {savedPlanetC
         <p class="sun-name">Sun</p>
       </div>
     
-
     {#each allPlanetsOfSolarSystem as planetTurning}
           <div class="all-planet-clock-{planetTurning.name}" style="transform: rotate({angles[planetTurning.name]}deg)">
             <div class="planet-and-text">
