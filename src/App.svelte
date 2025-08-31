@@ -190,6 +190,9 @@ function savingPlanet() {
 localStorage.setItem("planetChoosed", JSON.stringify(allPlanetsOfSolarSystem.map((showClock) => showClock)));
 };
 
+function savingSettings() {
+  localStorage.setItem("settings", JSON.stringify(settingsMemory))
+};
 
 function savedPlanetChoose(){
   const planetSettingString = localStorage.getItem("planetChoosed");
@@ -253,7 +256,7 @@ onMount(() => {if (localStorage.getItem("settings") !== null) {savedPlanetChoose
         <legend>Settings</legend>
         <div>
           <label for="clock-type">Clock convert</label>
-          <select name="clock-convert" id="clock-type" bind:value={settingsMemory.timeChart} onchange= {() => localStorage.setItem("settings", JSON.stringify(settingsMemory))}>
+          <select name="clock-convert" id="clock-type" bind:value={settingsMemory.timeChart} onchange= {savingSettings}>
             <option value="24h-time">24h</option>
             <option value="12h-time">12h</option>
           </select>
