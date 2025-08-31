@@ -55,10 +55,10 @@ let clockNumbersMarsShown = $state();
 let planetRotation = $state();
 let menuFieldset = $state({
   displayPlanets: "block",
-  displaySettings: "none"
+  displaySettings: "block"
 });
 let settingsMemory = $state({
-  timeChart: "24h-time",
+  timeChart: "",
 });
 
 
@@ -70,15 +70,36 @@ function padForClock (){
 
 // Time chart change 24h 12h
 function timeChartSwitch(planetHours) {
-  if (settingsMemory.timeChart === "24h-time") {
+  if (settingsMemory.timeChart === "24h time") {
   const timeChartChange = planetHours;
   return timeChartChange
   }
-  // else {
-  //   const timeChartChange = planetHours % 12;
-  //   return timeChartChange
-  // }
+  else {
+    const timeChartChange = planetHours % 12;
+    return timeChartChange
+  }
 };
+
+
+// am and pm appear
+
+function amPmSetting(planetHours) {
+  if (settingsMemory.timeChart === "12h time") {
+    if (planetHours < 12) {
+      const amPmTime = "am"
+      return amPmTime
+    }
+    else {
+      const amPmTime = "pm"
+      return amPmTime
+    };
+  } else {
+    const amPmTime = ""
+    return amPmTime
+  }
+  };
+
+
 
 // Clock for Earth time in user time zone
 function localTimeUser() {
@@ -86,8 +107,7 @@ function localTimeUser() {
   const localHourUser = currentTimeEartUtc.getHours();
   const localMinuteUser = currentTimeEartUtc.getMinutes();
   const localSecondUser = currentTimeEartUtc.getSeconds();
-  clockLocalUserTimeShown = `${padForClock()(localHourUser)} : ${padForClock()(localMinuteUser)} : ${padForClock()(localSecondUser)}`;
-
+  clockLocalUserTimeShown = `${padForClock()(timeChartSwitch(localHourUser))} : ${padForClock()(localMinuteUser)} : ${padForClock()(localSecondUser)} ${amPmSetting(localHourUser)}`;
 };
 
 
@@ -109,7 +129,7 @@ function clockMarsTime () {
   const hoursOnMars = Math.floor(marsTimeCoordinated);
   const minutesOnMars = Math.floor((marsTimeCoordinated % 1) * 60);
   const secondOnMars = Math.floor((((marsTimeCoordinated % 1 )*60) % 1) * 60);
-  clockNumbersMarsShown = `${padForClock()(hoursOnMars)} : ${padForClock()(minutesOnMars)} : ${padForClock()(secondOnMars)}`;
+  clockNumbersMarsShown = `${padForClock()(timeChartSwitch(hoursOnMars))} : ${padForClock()(minutesOnMars)} : ${padForClock()(secondOnMars)} ${amPmSetting(hoursOnMars)}`;
   return clockNumbersMarsShown;
 };
 
@@ -127,7 +147,7 @@ function clockNumbers () {
     const minutesOnPlanet = Math.floor((currentPlanetTime %3600) / 60);
     const secondOnPlanet = Math.floor(currentPlanetTime % 60);
 
-  clocks[planet.name] = `${padForClock()(hoursOnPlanet)} : ${padForClock()(minutesOnPlanet)} : ${padForClock()(secondOnPlanet)}`;
+  clocks[planet.name] = `${padForClock()(timeChartSwitch(hoursOnPlanet))} : ${padForClock()(minutesOnPlanet)} : ${padForClock()(secondOnPlanet)} ${amPmSetting(hoursOnPlanet)}`;
     }
   })
   return clockNumbersShown
@@ -187,29 +207,45 @@ setInterval(planetsRotation, 1000);
 
 // Localestorage to keep selected clock shown
 
+
+function savingSettings() {
+  localStorage.setItem("settings", JSON.stringify(settingsMemory.timeChart));
+
+};
+
+function loadingLocalSettings() {
+  if (localStorage.getItem("settings") !== null) {savedSettingsChoosed()}
+  else {settingsMemory.timeChart = "24h time";
+  };
+};
+
+function savedSettingsChoosed(){
+  const localSettingsString = localStorage.getItem("settings");
+  settingsMemory.timeChart = JSON.parse(localSettingsString);
+};
+
+// LocalStorage planets
+
 function savingPlanet() {
 localStorage.setItem("planetChoosed", JSON.stringify(allPlanetsOfSolarSystem.map((showClock) => showClock)));
 };
-
-function savingSettings() {
-  localStorage.setItem("settings", JSON.stringify(settingsMemory))
-  console.log(localStorage.getItem("settings"))
-};
+function loadingStorage() {
+  if (localStorage.getItem("planetChoosed") !== null) {savedPlanetChoose()};
+  
+}
 
 function savedPlanetChoose(){
   const planetSettingString = localStorage.getItem("planetChoosed");
   allPlanetsOfSolarSystem = JSON.parse(planetSettingString);
-  const settingsSavedLocaly = localStorage.getItem("settings");
-  settingsMemory = JSON.parse(settingsSavedLocaly);
-  console.log(settingsMemory);
 };
 
-function loadingStorage() {
-  if (localStorage.getItem("planetChoosed") !== null) {savedPlanetChoose()}
-  // if (localStorage.getItem("settings") !== null) {savedPlanetChoose()}
-}
+function allOnMountFunction() {
+  loadingStorage();
+  loadingLocalSettings()
+};
+onMount(allOnMountFunction);
 
-onMount(loadingStorage)
+
 
 </script>
 
@@ -259,18 +295,17 @@ onMount(loadingStorage)
 
 
       <!-- Settings menu -->
-      <fieldset class= "settingsFieldset" style="display: {menuFieldset.displaySettings}">
+      <fieldset class= "settingsFieldset" style="display: {menuFieldset.displaySettings}" >
         <legend>Settings</legend>
         <div>
-          <label for="clock-type">Clock convert</label>
-
-          <select name="clock-convert" id="clock-type" bind:value={settingsMemory.timeChart} onchange= {savingSettings}>
-            <option value="24h-time" selected>24h</option>
-            <option value="12h-time">12h</option>
+          <label for="clock-type" >Clock convert</label>
+          <select name="clock-convert" id="clock-type" bind:value={settingsMemory.timeChart} onchange={savingSettings}>
+            <option  value="24h time">24h time</option>
+            <option  value="12h time">12h time</option>
           </select>
+          <p>valeur {settingsMemory.timeChart}</p>
         </div>
       </fieldset>
-      
     </article>
   </container>
 
@@ -324,7 +359,7 @@ justify-content: space-between;
 }
 
 .Mercury, .Venus, .Earth, .Mars, .Jupiter, .Saturn,.Uranus, .Neptune {
-  padding: 0.7rem 2rem 0.7rem 2rem;
+  padding: 0.7rem 0.8rem 0.7rem 1rem;
 }
 
 .Mercury, .Mercury-name { color: #A9A9A9; }
