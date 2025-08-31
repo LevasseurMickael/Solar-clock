@@ -55,7 +55,7 @@ let clockNumbersMarsShown = $state();
 let planetRotation = $state();
 let menuFieldset = $state({
   displayPlanets: "block",
-  displaySettings: "block"
+  displaySettings: "none"
 });
 let settingsMemory = $state({
   timeChart: "",
@@ -303,7 +303,6 @@ onMount(allOnMountFunction);
             <option  value="24h time">24h time</option>
             <option  value="12h time">12h time</option>
           </select>
-          <p>valeur {settingsMemory.timeChart}</p>
         </div>
       </fieldset>
     </article>
