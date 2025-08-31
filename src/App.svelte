@@ -73,10 +73,11 @@ function timeChartSwitch(planetHours) {
   if (settingsMemory.timeChart === "24h-time") {
   const timeChartChange = planetHours;
   return timeChartChange
-  }else {
-    const timeChartChange = planetHours % 12;
-    return timeChartChange
   }
+  // else {
+  //   const timeChartChange = planetHours % 12;
+  //   return timeChartChange
+  // }
 };
 
 // Clock for Earth time in user time zone
@@ -85,7 +86,7 @@ function localTimeUser() {
   const localHourUser = currentTimeEartUtc.getHours();
   const localMinuteUser = currentTimeEartUtc.getMinutes();
   const localSecondUser = currentTimeEartUtc.getSeconds();
-  clockLocalUserTimeShown = `${padForClock()(timeChartSwitch(localHourUser))} : ${padForClock()(localMinuteUser)} : ${padForClock()(localSecondUser)}`;
+  clockLocalUserTimeShown = `${padForClock()(localHourUser)} : ${padForClock()(localMinuteUser)} : ${padForClock()(localSecondUser)}`;
 
 };
 
@@ -108,7 +109,7 @@ function clockMarsTime () {
   const hoursOnMars = Math.floor(marsTimeCoordinated);
   const minutesOnMars = Math.floor((marsTimeCoordinated % 1) * 60);
   const secondOnMars = Math.floor((((marsTimeCoordinated % 1 )*60) % 1) * 60);
-  clockNumbersMarsShown = `${padForClock()(timeChartSwitch(hoursOnMars))} : ${padForClock()(minutesOnMars)} : ${padForClock()(secondOnMars)}`;
+  clockNumbersMarsShown = `${padForClock()(hoursOnMars)} : ${padForClock()(minutesOnMars)} : ${padForClock()(secondOnMars)}`;
   return clockNumbersMarsShown;
 };
 
@@ -126,7 +127,7 @@ function clockNumbers () {
     const minutesOnPlanet = Math.floor((currentPlanetTime %3600) / 60);
     const secondOnPlanet = Math.floor(currentPlanetTime % 60);
 
-  clocks[planet.name] = `${padForClock()(timeChartSwitch(hoursOnPlanet))} : ${padForClock()(minutesOnPlanet)} : ${padForClock()(secondOnPlanet)}`;
+  clocks[planet.name] = `${padForClock()(hoursOnPlanet)} : ${padForClock()(minutesOnPlanet)} : ${padForClock()(secondOnPlanet)}`;
     }
   })
   return clockNumbersShown
@@ -192,6 +193,7 @@ localStorage.setItem("planetChoosed", JSON.stringify(allPlanetsOfSolarSystem.map
 
 function savingSettings() {
   localStorage.setItem("settings", JSON.stringify(settingsMemory))
+  console.log(localStorage.getItem("settings"))
 };
 
 function savedPlanetChoose(){
@@ -204,7 +206,7 @@ function savedPlanetChoose(){
 
 function loadingStorage() {
   if (localStorage.getItem("planetChoosed") !== null) {savedPlanetChoose()}
-  if (localStorage.getItem("settings") !== null) {savedPlanetChoose()}
+  // if (localStorage.getItem("settings") !== null) {savedPlanetChoose()}
 }
 
 onMount(loadingStorage)
@@ -261,6 +263,7 @@ onMount(loadingStorage)
         <legend>Settings</legend>
         <div>
           <label for="clock-type">Clock convert</label>
+
           <select name="clock-convert" id="clock-type" bind:value={settingsMemory.timeChart} onchange= {savingSettings}>
             <option value="24h-time" selected>24h</option>
             <option value="12h-time">12h</option>
