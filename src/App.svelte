@@ -324,6 +324,19 @@ justify-content: space-between;
 .Uranus, .Uranus-name { color: #7FFFD4; }
 .Neptune, .Neptune-name { color: #1E90FF; }
 
+/* Menu selector */
+
+.menu-tabs {
+  display: flex;
+}
+
+.tab-links {
+  font-size: 0.8rem;
+  background-color: royalblue;
+  margin: 0.3rem;
+}
+
+
 .planets-list-area {
   font-size: 1rem;
   line-height: 1rem;
