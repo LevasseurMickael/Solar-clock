@@ -199,6 +199,7 @@ function savedPlanetChoose(){
 };
 
 onMount(() => {if (localStorage.getItem("planetChoosed") !== null) {savedPlanetChoose()}})
+onMount(() => {if (localStorage.getItem("settings") !== null) {savedPlanetChoose()}})
 
 </script>
 
