@@ -105,8 +105,8 @@ nickname: "The Speedy Hothead",
 let clocks = $state({});
 let angles = $state({});
 let openPopUp = $state(false);
-let buttonPressedName = $state()
-let descriptionPopUp = $state({});
+let buttonPressedName = $state();
+
 
 // Clock shown on user's page
 let clockLocalUserTimeShown = $state();
@@ -263,10 +263,14 @@ function showPlanetInformation(buttonName) {
 };
 
 // Close the description pop-up
-function closePlanetInformation(close, event) {
-  if (event.target.classList.contains("planet-description") || close === "false") {
-    openPopUp = false;
-    }
+function closePlanetInformation() {
+  openPopUp = false;
+};
+
+function closePlanetInformationOut(event) {
+  if (event.target.classList.contains("planet-description")) {
+    closePlanetInformation()
+  }
 };
 
 // Time refresh set to 1s
@@ -325,7 +329,7 @@ onMount(allOnMountFunction);
 </script>
 
 <main class="clock-all-page">
-  <!--  -->
+
 <container class="clock-and-selector">
     <article class="planets-clock">
       {#each allPlanetsOfSolarSystem as planet}
@@ -394,19 +398,22 @@ onMount(allOnMountFunction);
       </div>
 
       <!-- Description of planet when planet clicked -->
-      {#if openPopUp === true}
-        <div class="planet-description" >
-          {#each allPlanetDescription as planetDescription}
-            {#if planetDescription.name === buttonPressedName}
-            <button type="button" aria-label="close the pop-up" onclick={() => closePlanetInformation("false")}>X</button>
-            <p>{planetDescription.name}, {planetDescription.nickname}</p>
-            <ul>
-              <li>{planetDescription.description1}</li>
-              <li>{planetDescription.description2}</li>
-            </ul>
-            <a href={planetDescription.link} aria-label="link to wikipedia for ${planetDescription.name}">More information on Wikipedia</a>
-            {/if}
-          {/each}
+      {#if openPopUp}
+
+        <div class="planet-description">
+          <div class="pop-up-button-container"><button type="button" class="pop-up-button" aria-label="close the pop-up" onclick={() => closePlanetInformation()}>X</button></div>
+          <div class="pop-up-overlay">
+            {#each allPlanetDescription as planetDescription}
+              {#if planetDescription.name === buttonPressedName}
+              <p style="color: var(--{planetDescription.name})">{planetDescription.name}, {planetDescription.nickname}</p>
+              <ul class="pop-up-text">
+                <li>{planetDescription.description1}</li>
+                <li>{planetDescription.description2}</li>
+              </ul>
+              <a href={planetDescription.link} aria-label="link to wikipedia for ${planetDescription.name}">More information on Wikipedia</a>
+              {/if}
+            {/each}
+          </div>
         </div>
       {/if}
 
@@ -425,6 +432,21 @@ onMount(allOnMountFunction);
 </main>
 
 <style>
+
+:root {
+  --Sun: #E6C229;
+  --Mercury: #A9A9A9;
+  --Venus: #E6C229; 
+  --Earth: #1DA1F2; 
+  --Mars: #C1440E; 
+  --Jupiter: #F7CC7F; 
+  --Saturn: #F5CBA7; 
+  --Uranus: #7FFFD4; 
+  --Neptune: #1E90FF; 
+}
+
+
+
 
 main {
   background-image: url(./assets/a3aad14fdb499346d74950a51429026a.jpg);
@@ -453,14 +475,14 @@ justify-content: space-between;
   padding: 0.7rem 0.8rem 0.7rem 1rem;
 }
 
-.Mercury, .Mercury-name { color: #A9A9A9; }
-.Venus, .Venus-name { color: #E6C229; }
-.Earth, .Earth-name { color: #1DA1F2; }
-.Mars, .Mars-name { color: #C1440E; }
-.Jupiter, .Jupiter-name { color: #F7CC7F; }
-.Saturn, .Saturn-name { color: #F5CBA7; }
-.Uranus, .Uranus-name { color: #7FFFD4; }
-.Neptune, .Neptune-name { color: #1E90FF; }
+.Mercury, .Mercury-name { color: var(--Mercury); }
+.Venus, .Venus-name { color: var(--Venus); }
+.Earth, .Earth-name { color: var(--Earth); }
+.Mars, .Mars-name { color: var(--Mars); }
+.Jupiter, .Jupiter-name { color: var(--Jupiter); }
+.Saturn, .Saturn-name { color: var(--Saturn); }
+.Uranus, .Uranus-name { color: var(--Uranus); }
+.Neptune, .Neptune-name { color: var(--Neptune); }
 
 /* Menu selector */
 
@@ -487,7 +509,6 @@ justify-content: space-between;
 
 
 
-
 /* Planets rotation area */
 
 .planets-clocks {
@@ -504,11 +525,60 @@ justify-content: space-between;
   background-image: url(./assets/pngwing.com.png);
 }
 
+
+.planet-description {
+  position: fixed;
+  transform: rotate(90deg);
+  width: 75vh;
+  height: 35vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 500;
+}
+
+.pop-up-button-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: end;
+}
+
+.pop-up-button {
+  position: relative;
+  align-self: flex-start;
+  background-color: darkred;
+  color: white;
+  z-index: 1000;
+}
+
+
+.pop-up-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
+.pop-up-text {
+  margin: 1rem;
+  padding: 1rem;
+  column-gap: 0.5rem;
+}
+
 .Sun {
   display: flex;
   position: relative;
   transform: rotate(-90deg) translate(50px);
   align-items: center;
+  justify-content: center;
 }
 
 .sun-button-all{
@@ -523,11 +593,11 @@ justify-content: space-between;
   height: 60px;
   width: 60px;
   border-radius: 50%;
-  background-color: #E6C229;
+  background-color: var(--Sun);
   padding: 0;
 }
 
-.sun-name {color: #E6C229;}
+.sun-name {color: var(--Sun);}
 
 .planet-and-text {
   transform: rotate(90deg);
