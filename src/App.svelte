@@ -269,9 +269,20 @@ function closePlanetInformation() {
 
 function closePlanetInformationOut(event) {
   if (event.target.classList.contains("planet-description")) {
-    closePlanetInformation()
+    closePlanetInformation();
   }
 };
+
+function keyDownPopUp (event) {
+  if (event.key === "Enter" || event.key === " " || event.ket === "Esc") {
+    closePlanetInformation();
+  }
+}
+
+function handleModalClick(event) {
+    event.stopPropagation();
+  }
+
 
 // Time refresh set to 1s
 clockNumbers();
@@ -400,21 +411,23 @@ onMount(allOnMountFunction);
       <!-- Description of planet when planet clicked -->
       {#if openPopUp}
 
-        <div class="planet-description">
-          <div class="pop-up-button-container"><button type="button" class="pop-up-button" aria-label="close the pop-up" onclick={() => closePlanetInformation()}>X</button></div>
-          <div class="pop-up-overlay">
-            {#each allPlanetDescription as planetDescription}
-              {#if planetDescription.name === buttonPressedName}
-              <p style="color: var(--{planetDescription.name})">{planetDescription.name}, {planetDescription.nickname}</p>
-              <ul class="pop-up-text">
-                <li>{planetDescription.description1}</li>
-                <li>{planetDescription.description2}</li>
-              </ul>
-              <a href={planetDescription.link} aria-label="link to wikipedia for ${planetDescription.name}">More information on Wikipedia</a>
-              {/if}
-            {/each}
+        <div class="planet-description" onclick={closePlanetInformationOut} onkeydown={keyDownPopUp}>
+            <div class="inside-planet-description" onclick={handleModalClick}>
+              <div class="pop-up-button-container"><button type="button" class="pop-up-button" aria-label="close the pop-up" onclick={closePlanetInformation}>X</button></div>
+              <div class="pop-up-overlay">
+                {#each allPlanetDescription as planetDescription}
+                  {#if planetDescription.name === buttonPressedName}
+                  <p style="color: var(--{planetDescription.name})">{planetDescription.name}, {planetDescription.nickname}</p>
+                  <ul class="pop-up-text">
+                    <li>{planetDescription.description1}</li>
+                    <li>{planetDescription.description2}</li>
+                  </ul>
+                  <a href={planetDescription.link} aria-label="link to wikipedia for ${planetDescription.name}">More information on Wikipedia</a>
+                  {/if}
+                {/each}
+              </div>
+            </div>
           </div>
-        </div>
       {/if}
 
       {#each allPlanetsOfSolarSystem as planetTurning}
@@ -525,8 +538,15 @@ justify-content: space-between;
   background-image: url(./assets/pngwing.com.png);
 }
 
-
 .planet-description {
+  width: 100vh;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inside-planet-description {
   position: fixed;
   transform: rotate(90deg);
   width: 75vh;
