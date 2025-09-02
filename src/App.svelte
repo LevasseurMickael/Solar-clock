@@ -2,7 +2,7 @@
   import svelteLogo from './assets/svelte.svg'
   import viteLogo from '/vite.svg'
   import Counter from './lib/Counter.svelte'
-  import {onMount} from "svelte"
+  import {onMount} from 'svelte'
 
 
 
@@ -44,9 +44,69 @@ let allPlanetsOfSolarSystem = $state([
 ]);
 
 
+const allPlanetDescription = [
+  { name: "Sun",
+  nickname: "The Ultimate Drama Queen",
+  description1: "Description: A giant ball of plasma, the Sun makes up 99.8% of the solar system's mass. It's a nuclear fusion powerhouse, burning 600 million tons of hydrogen every second.",
+  description2: "Funny Anecdote: The Sun is so powerful that if you could harness just one second of its energy, you could power Earth for 500,000 years. Yet, it still can’t keep your Wi-Fi from dropping. Priorities, Sun. Priorities.",
+  link: "https://en.wikipedia.org/wiki/Sun",
+  },
+  { name: "Mercury",
+nickname: "The Speedy Hothead",
+  description1: "Description: The smallest and closest planet to the Sun, Mercury zips around its orbit in just 88 Earth days. It's a world of extremes: scorching days (430°C) and freezing nights (-180°C).",
+  description2: "Funny Anecdote: If you lived on Mercury, you'd celebrate your birthday every 3 Earth months—but you'd also age faster than anyone else in the solar system. Talk about a midlife crisis!",
+  link: "https://en.wikipedia.org/wiki/Mercury_(planet)",
+  },
+    { name: "Venus",
+  nickname: "The Toxic Twin",
+  description1: "Description: Similar in size to Earth, Venus is wrapped in thick, toxic clouds of sulfuric acid. Its surface is hot enough to melt lead (475°C), and the atmospheric pressure would crush you like a soda can.",
+  description2: "Funny Anecdote: Venus rotates so slowly that a day there (243 Earth days) is longer than its year (225 Earth days). So if you moved there, you'd arrive after your own birthday.",
+  link: "https://en.wikipedia.org/wiki/Venus",
+  },
+    { name: "Earth",
+  nickname: "The Oddball Oasis",
+  description1: "Description: The only known planet with life, liquid water, and a breathable atmosphere. Also, the only planet not named after a god (unless you count Gaia, but that's more of a nickname).",
+  description2: "Funny Anecdote: Earth is the only place where you can order pizza. Coincidence? Probably not.",
+  link: "https://en.wikipedia.org/wiki/Earth",
+  },
+    { name: "Mars",
+  nickname: "The Rusty Desert",
+  description1: "Description: Known as the Red Planet due to iron oxide (rust) on its surface, Mars is home to the solar system's tallest volcano (Olympus Mons) and deepest canyon (Valles Marineris).",
+  description2: "Funny Anecdote: Mars has two moons, Phobos and Deimos, which translate to “Fear” and “Panic.” Perfect names for a planet that's probably haunted by failed rovers.",
+  link: "https://en.wikipedia.org/wiki/Mars",
+  },
+    { name: "Jupiter",
+  nickname: "The Gas Giant with a Temper",
+  description1: "Description: The largest planet, Jupiter is a stormy behemoth with a Great Red Spot—a hurricane that's been raging for at least 400 years.",
+  description2: "Funny Anecdote: Jupiter is so massive that it could fit all the other planets inside it—twice. It's basically the solar system's overprotective big brother.",
+  link: "https://en.wikipedia.org/wiki/Jupiter",
+  },
+    { name: "Saturn",
+  nickname: "The Bling King",
+  description1: "Description: Famous for its dazzling rings made of ice and rock, Saturn is a gas giant with 83 moons (and counting).",
+  description2: "Funny Anecdote: Saturn's rings are mostly chunks of ice, some as small as dust and others as big as mountains. If you tried to ice skate on them, you'd fall forever.",
+  link: "https://en.wikipedia.org/wiki/Saturn",
+  },
+    { name: "Uranus",
+  nickname: "The Sideways Jokester",
+  description1: "Description: Uranus rotates on its side (98° tilt), likely due to a ancient cosmic collision. It's also the coldest planet, with temperatures dropping to -224°C.",
+  description2: "Funny Anecdote: Yes, the jokes write themselves. But did you know Uranus smells like rotten eggs? (Thanks, hydrogen sulfide!)",
+  link: "https://en.wikipedia.org/wiki/Uranus",
+  },
+    { name: "Neptune",
+  nickname: "The Windy Mystery",
+  description1: "Description: The farthest planet from the Sun, Neptune is a blue ice giant with the strongest winds in the solar system (2,100 km/h).",
+  description2: "Funny Anecdote: Neptune was predicted by math before it was seen through a telescope. It's like the solar system's version of a plot twist.",
+  link: "https://en.wikipedia.org/wiki/Neptune",
+  }
+];
+
 
 let clocks = $state({});
 let angles = $state({});
+let openPopUp = $state(false);
+let buttonPressedName = $state()
+let descriptionPopUp = $state({});
 
 // Clock shown on user's page
 let clockLocalUserTimeShown = $state();
@@ -60,6 +120,7 @@ let menuFieldset = $state({
 let settingsMemory = $state({
   timeChart: "",
 });
+
 
 
 // Pad used for all clock
@@ -193,6 +254,20 @@ function handleOpenTabselected(tabSelected) {
   return menuFieldset
 };
 
+// Open the description pop-up
+
+function showPlanetInformation(buttonName) {
+  buttonPressedName = buttonName;
+  openPopUp = true;
+  
+};
+
+// Close the description pop-up
+function closePlanetInformation(close, event) {
+  if (event.target.classList.contains("planet-description") || close === "false") {
+    openPopUp = false;
+    }
+};
 
 // Time refresh set to 1s
 clockNumbers();
@@ -314,20 +389,37 @@ onMount(allOnMountFunction);
     <div class="Sun">
       <div class="sun-button-all">
         <div class="clockpic"></div>
-        <button type="button" aria-label="sun button" class="sun-button"></button>
+        <button type="button" aria-label="sun button" class="sun-button" onclick={() => showPlanetInformation("Sun")}></button>
         <p class="sun-name">Sun</p>
       </div>
-    
-    {#each allPlanetsOfSolarSystem as planetTurning}
-          <div class="all-planet-clock-{planetTurning.name}" style="transform: rotate({angles[planetTurning.name]}deg)">
-            <div class="planet-and-text">
-              <div class="planet-text" style="transform: rotate(-{angles[planetTurning.name]}deg)">
-                <button type="button" aria-label="{planetTurning.name} button" class="{planetTurning.name}-clock" id={planetTurning.name}></button>
-                <p class="{planetTurning.name}-name">{planetTurning.name}</p>
-              </div>
+
+      <!-- Description of planet when planet clicked -->
+      {#if openPopUp === true}
+        <div class="planet-description" >
+          {#each allPlanetDescription as planetDescription}
+            {#if planetDescription.name === buttonPressedName}
+            <button type="button" aria-label="close the pop-up" onclick={() => closePlanetInformation("false")}>X</button>
+            <p>{planetDescription.name}, {planetDescription.nickname}</p>
+            <ul>
+              <li>{planetDescription.description1}</li>
+              <li>{planetDescription.description2}</li>
+            </ul>
+            <a href={planetDescription.link} aria-label="link to wikipedia for ${planetDescription.name}">More information on Wikipedia</a>
+            {/if}
+          {/each}
+        </div>
+      {/if}
+
+      {#each allPlanetsOfSolarSystem as planetTurning}
+        <div class="all-planet-clock-{planetTurning.name}" style="transform: rotate({angles[planetTurning.name]}deg)">
+          <div class="planet-and-text">
+            <div class="planet-text" style="transform: rotate(-{angles[planetTurning.name]}deg)">
+              <button type="button" aria-label="{planetTurning.name} button" class="{planetTurning.name}-clock" id={planetTurning.name} onclick={() => showPlanetInformation(planetTurning.name)}></button>
+              <p class="{planetTurning.name}-name">{planetTurning.name}</p>
             </div>
           </div>
-        {/each}
+        </div>
+      {/each}
     </div>
   </container>
 </main>
