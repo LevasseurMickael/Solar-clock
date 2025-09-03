@@ -44,6 +44,8 @@ let allPlanetsOfSolarSystem = $state([
 ]);
 
 
+//  All planet name, nickname and description for the pop-up
+
 const allPlanetDescription = [
   { name: "Sun",
   nickname: "The Ultimate Drama Queen",
@@ -101,15 +103,25 @@ nickname: "The Speedy Hothead",
   }
 ];
 
+// Month for the date shown
+const monthForYear = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "Nomvember", "December"
+]
+
+
 
 let clocks = $state({});
+
 let angles = $state({});
 let openPopUp = $state(false);
 let buttonPressedName = $state();
 
 
+
 // Clock shown on user's page
 let clockLocalUserTimeShown = $state();
+let todayDate = $state()
 let clockNumbersShown = $state();
 let clockNumbersMarsShown = $state();
 let planetRotation = $state();
@@ -165,10 +177,14 @@ function amPmSetting(planetHours) {
 // Clock for Earth time in user time zone
 function localTimeUser() {
   let currentTimeEartUtc = new Date();
+  const localYearUser = currentTimeEartUtc.getFullYear();
+  const localMonthUser = currentTimeEartUtc.getMonth();
+  const localDayUser = currentTimeEartUtc.getDate();
   const localHourUser = currentTimeEartUtc.getHours();
   const localMinuteUser = currentTimeEartUtc.getMinutes();
   const localSecondUser = currentTimeEartUtc.getSeconds();
   clockLocalUserTimeShown = `${padForClock()(timeChartSwitch(localHourUser))} : ${padForClock()(localMinuteUser)} : ${padForClock()(localSecondUser)} ${amPmSetting(localHourUser)}`;
+  todayDate = `${monthForYear[localMonthUser]} ${padForClock()(localDayUser)} ${padForClock()(localYearUser)}`;
 };
 
 
@@ -211,7 +227,6 @@ function clockNumbers () {
   clocks[planet.name] = `${padForClock()(timeChartSwitch(hoursOnPlanet))} : ${padForClock()(minutesOnPlanet)} : ${padForClock()(secondOnPlanet)} ${amPmSetting(hoursOnPlanet)}`;
     }
   })
-  return clockNumbersShown
 };
 
 
@@ -372,6 +387,7 @@ onMount(allOnMountFunction);
       <!-- Planets clocks to show menu -->
       <fieldset class= "planetsFieldset" style="display: {menuFieldset.displayPlanets}">
         <legend>Planet's clock</legend>
+        <p class="today-date">{todayDate}</p>
         <div class="planets-list">
         {#each allPlanetsOfSolarSystem as planet}
           <div class="${planet.name}" >
@@ -504,9 +520,10 @@ justify-content: space-between;
 }
 
 .tab-links {
-  font-size: 0.8rem;
+  font-size: 0.6rem;
   background-color: royalblue;
   margin: 0.3rem;
+  padding: 5px 20px 5px 20px;
 }
 
 
@@ -520,7 +537,11 @@ justify-content: space-between;
   align-items: start;
 }
 
-
+.today-date {
+  margin: 5px 0 7px 0 ;
+  color: var(--Sun);
+  background-color: rgba(0, 0, 0, 0.8);
+}
 
 /* Planets rotation area */
 
@@ -732,5 +753,6 @@ justify-content: space-between;
   width: 17px;
   border-radius: 50%;
 }
+
 
 </style>
