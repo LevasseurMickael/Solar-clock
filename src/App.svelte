@@ -340,7 +340,6 @@ onMount(allOnMountFunction);
 </script>
 
 <main class="clock-all-page">
-
 <container class="clock-and-selector">
     <article class="planets-clock">
       {#each allPlanetsOfSolarSystem as planet}
@@ -411,8 +410,9 @@ onMount(allOnMountFunction);
       <!-- Description of planet when planet clicked -->
       {#if openPopUp}
 
-        <div class="planet-description" onclick={closePlanetInformationOut} onkeydown={keyDownPopUp}>
-            <div class="inside-planet-description" onclick={handleModalClick}>
+        <div class="planet-description" role="button" onclick={closePlanetInformationOut} onkeydown={keyDownPopUp} tabindex="0">
+            <button onclick={handleModalClick} aria-label="place which do not close"></button>
+            <div class="inside-planet-description" role="document">
               <div class="pop-up-button-container"><button type="button" class="pop-up-button" aria-label="close the pop-up" onclick={closePlanetInformation}>X</button></div>
               <div class="pop-up-overlay">
                 {#each allPlanetDescription as planetDescription}
@@ -459,8 +459,6 @@ onMount(allOnMountFunction);
 }
 
 
-
-
 main {
   background-image: url(./assets/a3aad14fdb499346d74950a51429026a.jpg);
   color: white;
@@ -469,6 +467,8 @@ main {
   height: 100vh;
   width: 100vh;
 }
+
+
 
 .clock-and-selector {
   display: flex;
