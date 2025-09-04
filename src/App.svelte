@@ -400,16 +400,47 @@ onMount(allOnMountFunction);
 
 
       <!-- Settings menu -->
-      <fieldset class= "settingsFieldset" style="display: {menuFieldset.displaySettings}" >
-        <legend>Settings</legend>
-        <div>
-          <label for="clock-type" >Clock convert</label>
-          <select name="clock-convert" id="clock-type" bind:value={settingsMemory.timeChart} onchange={savingSettings}>
-            <option  value="24h time">24h time</option>
-            <option  value="12h time">12h time</option>
-          </select>
-        </div>
-      </fieldset>
+        <fieldset class= "settingsFieldset" style="display: {menuFieldset.displaySettings}" >
+          <legend>Settings</legend>
+          <div class="all-settings-window">
+            <div class="time-chart-choice">
+              <label for="clock-type" >Clock convert</label>
+              <select name="clock-convert" id="clock-type" bind:value={settingsMemory.timeChart} onchange={savingSettings}>
+                <option  value="24h time">24h time</option>
+                <option  value="12h time">12h time</option>
+              </select>
+            </div>
+              <div class="create-clock">
+                <p>Create a clock</p>
+                <input type="text" id="new-clock-name" required class="input-name" placeholder="Clock name">
+                <label for="select-plus-minus">Time zone</label>
+                <div class="select-time-zone">
+                  <select name="Time zone range" id="select-plus-minus" >
+                    <option value="+">+</option>
+                    <option value="-">-</option>
+                  </select>
+                  <form>
+                    <select name="Time zone" id="select-time-zone" >
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                      <option value="11">11</option>
+                      <option value="12">12</option>
+                    </select>
+                  </form>
+                </div>
+                <button type="submit" aria-label="submit new clock" class="submit-button">Create</button>
+              </div>
+          </div>
+        </fieldset>
     </article>
   </container>
 
@@ -530,6 +561,7 @@ justify-content: space-between;
 .planets-list-area {
   font-size: 1rem;
   line-height: 1rem;
+  width: 20vh;
 }
 .planets-list {
   display: flex;
@@ -541,6 +573,46 @@ justify-content: space-between;
   margin: 5px 0 7px 0 ;
   color: var(--Sun);
   background-color: rgba(0, 0, 0, 0.8);
+}
+
+
+.all-settings-window {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+
+.time-chart-choice {
+  display: flex;
+  flex-direction: column;
+}
+
+.create-clock {
+  padding: 0.5rem;
+}
+
+.input-name {
+  width: 80%;
+  padding: 3px;
+  margin: 0 0.5rem 0.5rem 0.5rem;
+}
+
+.select-time-zone {
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+margin: 0.7rem 0 0.7rem 0;
+width: 80%;
+}
+
+#select-plus-minus, #select-time-zone {
+  margin-left: 1rem;
+}
+
+.submit-button {
+  background-color: rgba(3, 8, 63, 0.836);
 }
 
 /* Planets rotation area */
