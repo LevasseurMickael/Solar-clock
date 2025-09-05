@@ -208,13 +208,14 @@ function handleCreateUserClock (event) {
   createdUserClockName = "";
   createUserClockMP = "";
   createUserClockTz = "";
+  savingSettings();
 };
 
   function createdClorkShwon () {
   let currentCreatedEartUtc = new Date();
   createdUserClock.forEach((namedClock) => {
   let newClockTimeUtcsecond = (currentCreatedEartUtc.getTime()) / 1000;
-  const hoursOnNewClock = Math.floor(((newClockTimeUtcsecond + (createUserClockMP * createUserClockTz * 3600)) % 86400) / 3600);
+  const hoursOnNewClock = Math.floor(((newClockTimeUtcsecond + (namedClock.timeZoneMP * namedClock.timeZoneChart * 3600)) % 86400) / 3600);
   const minutesOnNewClock = Math.floor((newClockTimeUtcsecond %3600) / 60);
   const secondOnNewClock = Math.floor(newClockTimeUtcsecond % 60);
   CreatedClockTimeShown[namedClock.nameClock] = `${padForClock()(timeChartSwitch(hoursOnNewClock))} : ${padForClock()(minutesOnNewClock)} : ${padForClock()(secondOnNewClock)} ${amPmSetting(hoursOnNewClock)}`;
@@ -226,6 +227,7 @@ function handleDeleteClock(clockName) {
     return clocksCheck.nameClock !== clockName;
   });
   createdUserClock = deletedClockCreated
+  savingSettings();
 };
 
 
@@ -262,7 +264,6 @@ function clockNumbers () {
     const hoursOnPlanet = Math.floor((currentPlanetTime % 86400) / 3600);
     const minutesOnPlanet = Math.floor((currentPlanetTime %3600) / 60);
     const secondOnPlanet = Math.floor(currentPlanetTime % 60);
-
   clocks[planet.name] = `${padForClock()(timeChartSwitch(hoursOnPlanet))} : ${padForClock()(minutesOnPlanet)} : ${padForClock()(secondOnPlanet)} ${amPmSetting(hoursOnPlanet)}`;
     }
   })
@@ -356,7 +357,7 @@ setInterval(createdClorkShwon, 1000);
 
 function savingSettings() {
   localStorage.setItem("settings", JSON.stringify(settingsMemory.timeChart));
-
+  localStorage.setItem("clock-created", JSON.stringify(createdUserClock));
 };
 
 function loadingLocalSettings() {
@@ -365,9 +366,20 @@ function loadingLocalSettings() {
   };
 };
 
+function checkingLocalClockCreated () {
+  if (localStorage.getItem("clock-created") !== null) {savedCreatedClock()}
+  else {createdUserClock = []}
+};
+
+function savedCreatedClock (){
+  const localClockCreatedsString = localStorage.getItem("clock-created");
+  createdUserClock = (JSON.parse(localClockCreatedsString));
+};
+
 function savedSettingsChoosed(){
   const localSettingsString = localStorage.getItem("settings");
   settingsMemory.timeChart = JSON.parse(localSettingsString);
+
 };
 
 // LocalStorage planets
@@ -388,6 +400,7 @@ function savedPlanetChoose(){
 function allOnMountFunction() {
   loadingStorage();
   loadingLocalSettings()
+  checkingLocalClockCreated ()
 };
 onMount(allOnMountFunction);
 
