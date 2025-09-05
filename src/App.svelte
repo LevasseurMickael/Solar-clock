@@ -131,6 +131,7 @@ let menuFieldset = $state({
 });
 let settingsMemory = $state({
   timeChart: "",
+  bckGround: "",
 });
 
 let createdUserClock = $state([])
@@ -359,13 +360,14 @@ setInterval(createdClorkShwon, 1000);
 
 
 function savingSettings() {
-  localStorage.setItem("settings", JSON.stringify(settingsMemory.timeChart));
+  localStorage.setItem("settings", JSON.stringify(settingsMemory));
   localStorage.setItem("clock-created", JSON.stringify(createdUserClock));
 };
 
 function loadingLocalSettings() {
   if (localStorage.getItem("settings") !== null) {savedSettingsChoosed()}
   else {settingsMemory.timeChart = "24h time";
+  settingsMemory.bckGround = "";
   };
 };
 
@@ -381,7 +383,7 @@ function savedCreatedClock (){
 
 function savedSettingsChoosed(){
   const localSettingsString = localStorage.getItem("settings");
-  settingsMemory.timeChart = JSON.parse(localSettingsString);
+  settingsMemory = JSON.parse(localSettingsString);
 
 };
 
@@ -473,6 +475,16 @@ onMount(allOnMountFunction);
                 <option  value="12h time">12h time</option>
               </select>
             </div>
+            <div class="select-clock-background">
+              <p>Clock watch</p>
+              <select name="background-selector" bind:value={settingsMemory.bckGround} onchange={savingSettings}>
+                <option value="">None</option>
+                <option value="/line-no-number.png">Clock 1</option>
+                <option value="/no-number-point.png">Clock 2</option>
+                <option value="/number-point.png">Clock 3</option>
+                <option value="/ramon-number-line.png">Clock 4</option>
+              </select>
+            </div>
               <form onsubmit={handleCreateUserClock}>
                 <div class="create-clock">
                   <p>Create a clock</p>
@@ -530,7 +542,7 @@ onMount(allOnMountFunction);
 
 
 <!-- planets watch type clock area -->
-  <container class="planets-clocks">
+  <container class="planets-clocks" style="background-image: url({settingsMemory.bckGround})">
     <div class="Sun">
       <div class="sun-button-all">
         <div class="clockpic"></div>
@@ -708,12 +720,11 @@ width: 80%;
   justify-content: center;
   align-items: center;
   font-size: 0.75rem;
-    background-repeat: no-repeat;
-  background-size: cover;
   background-size: 80%;
   background-position-x: center;
   background-position-y: center;
-  background-image: url(./assets/pngwing.com.png);
+  background-repeat: no-repeat;
+  background-size: 700px;
 }
 
 .planet-description {
@@ -776,7 +787,6 @@ width: 80%;
   position: relative;
   transform: rotate(-90deg) translate(50px);
   align-items: center;
-  justify-content: center;
 }
 
 .sun-button-all{
