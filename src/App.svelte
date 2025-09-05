@@ -138,6 +138,7 @@ let createdUserClock = $state([])
 let createdUserClockName = $state("");
 let createUserClockMP = $state();
 let createUserClockTz = $state();
+let createdColour = $state();
 
 
 
@@ -202,12 +203,14 @@ function handleCreateUserClock (event) {
   createdUserClockArray = {
   nameClock: createdUserClockName,
   timeZoneMP: createUserClockMP,
-  timeZoneChart: createUserClockTz
+  timeZoneChart: createUserClockTz,
+  colourClock: createdColour,
   };
   createdUserClock.push(createdUserClockArray);
   createdUserClockName = "";
   createUserClockMP = "";
   createUserClockTz = "";
+  createdColour = "";
   savingSettings();
 };
 
@@ -430,7 +433,7 @@ onMount(allOnMountFunction);
         {/if}
       {/each }
       {#each createdUserClock as createdClock}
-        <div class={createdClock.nameClock}>
+        <div class="created-clocks" style="color: {createdClock.colourClock}">
             <p>{createdClock.nameClock}</p>
             {CreatedClockTimeShown[createdClock.nameClock]}
           </div>
@@ -474,13 +477,12 @@ onMount(allOnMountFunction);
                 <div class="create-clock">
                   <p>Create a clock</p>
                   <input type="text" id="new-clock-name" required class="input-name" placeholder="Clock name" bind:value={createdUserClockName}>
-                  <label for="select-plus-minus">Time zone</label>
+                  <label for="select-plus-minus">Time zone UTC</label>
                   <div class="select-time-zone">
                     <select name="Time zone range" id="select-plus-minus" bind:value={createUserClockMP}>
                       <option value="1">+</option>
                       <option value="-1">-</option>
                     </select>
-                
                       <select name="Time zone" id="select-time-zone" bind:value={createUserClockTz}>
                         <option value="0">0</option>
                         <option value="1">1</option>
@@ -496,8 +498,22 @@ onMount(allOnMountFunction);
                         <option value="11">11</option>
                         <option value="12">12</option>
                       </select>
-                
                   </div>
+                  <div class="create-clock">
+                        <label for="colours">Colour Choice</label>
+                        <select name="colours" id="colours" bind:value={createdColour}>
+                          <option value="#4A6FA5" style="background-color: #3A3B6B;" >Electric Blue</option>
+                          <option value="#3AA675" style="background-color: #2D5A3D;" >Emerald Green</option>
+                          <option value="#7B5EA8" style="background-color: #5E3059;" >Lavender</option>
+                          <option value="#A63A3A" style="background-color: #6B2F2F;" >Ruby Red</option>
+                          <option value="#3A9A9A" style="background-color: #1E4D43;" >Turquoise</option>
+                          <option value="#6A7B8B" style="background-color: #4A4A4A;" >Slate Gray</option>
+                          <option value="#B87A4A" style="background-color: #7A4D2A;" >Copper</option>
+                          <option value="#8A6BA8" style="background-color: #5D3F6A;" >Bright Mauve</option>
+                          <option value="#4A9BCA" style="background-color: #3D5B41;" >Azure Blue</option>
+                          <option value="#5AB87A" style="background-color: #6B3D3D;" >Mint Green</option>
+                        </select>
+                      </div>
                   <button type="submit" aria-label="submit new clock" class="submit-button">Create</button>
                   <div class="clock-created-list">
                     {#each createdUserClock as clock}
@@ -599,7 +615,7 @@ justify-content: space-between;
   justify-content: center;
 }
 
-.Mercury, .Venus, .Earth, .Mars, .Jupiter, .Saturn,.Uranus, .Neptune {
+.Mercury, .Venus, .Earth, .Mars, .Jupiter, .Saturn,.Uranus, .Neptune, .created-clocks {
   padding: 0.7rem 0.8rem 0.7rem 1rem;
 }
 
@@ -616,12 +632,13 @@ justify-content: space-between;
 
 .menu-tabs {
   display: flex;
+    justify-content: center;
 }
 
 .tab-links {
   font-size: 0.6rem;
   background-color: royalblue;
-  margin: 0.3rem;
+  margin: 0.3rem 0.3rem 0 0.3rem;
   padding: 5px 20px 5px 20px;
 }
 
@@ -658,7 +675,7 @@ justify-content: space-between;
 }
 
 .create-clock {
-  padding: 0.5rem;
+  padding: 0.3rem 0.3rem 0.3rem 0.3rem;
 }
 
 .input-name {
