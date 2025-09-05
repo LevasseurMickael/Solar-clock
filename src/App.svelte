@@ -195,24 +195,30 @@ function localTimeUser() {
 
 // Clock creation by user
 
+let createdUserClockArray = {};
+
 function handleCreateUserClock (event) {
   event.preventDefault();
-  const createdUserClockArray = {
+  createdUserClockArray = {
   nameClock: createdUserClockName,
   timeZoneMP: createUserClockMP,
   timeZoneChart: createUserClockTz
   };
-  let currentCreatedEartUtc = new Date();
-  let newClockTimeUtcsecond = (currentCreatedEartUtc.getTime()) / 1000;
-  const hoursOnNewClock = Math.floor(((newClockTimeUtcsecond + (createUserClockMP + createUserClockTz)) % 86400) / 3600);
-  const minutesOnNewClock = Math.floor((newClockTimeUtcsecond %3600) / 60);
-  const secondOnNewClock = Math.floor(newClockTimeUtcsecond % 60);
-  CreatedClockTimeShown[createdUserClockName] = `${padForClock()(timeChartSwitch(hoursOnNewClock))} : ${padForClock()(minutesOnNewClock)} : ${padForClock()(secondOnNewClock)} ${amPmSetting(hoursOnNewClock)}`;
-
   createdUserClock.push(createdUserClockArray);
   createdUserClockName = "";
   createUserClockMP = "";
   createUserClockTz = "";
+};
+
+  function createdClorkShwon () {
+  let currentCreatedEartUtc = new Date();
+  createdUserClock.forEach((namedClock) => {
+  let newClockTimeUtcsecond = (currentCreatedEartUtc.getTime()) / 1000;
+  const hoursOnNewClock = Math.floor(((newClockTimeUtcsecond + (createUserClockMP * createUserClockTz * 3600)) % 86400) / 3600);
+  const minutesOnNewClock = Math.floor((newClockTimeUtcsecond %3600) / 60);
+  const secondOnNewClock = Math.floor(newClockTimeUtcsecond % 60);
+  CreatedClockTimeShown[namedClock.nameClock] = `${padForClock()(timeChartSwitch(hoursOnNewClock))} : ${padForClock()(minutesOnNewClock)} : ${padForClock()(secondOnNewClock)} ${amPmSetting(hoursOnNewClock)}`;
+  })
 };
 
 function handleDeleteClock(clockName) {
@@ -337,11 +343,13 @@ clockNumbers();
 localTimeUser();
 clockMarsTime();
 planetsRotation();
+createdClorkShwon();
 
 setInterval(clockNumbers, 1000);
 setInterval(localTimeUser, 1000);
 setInterval(clockMarsTime, 1000);
 setInterval(planetsRotation, 1000);
+setInterval(createdClorkShwon, 1000);
 
 // Localestorage to keep selected clock shown
 
@@ -456,8 +464,8 @@ onMount(allOnMountFunction);
                   <label for="select-plus-minus">Time zone</label>
                   <div class="select-time-zone">
                     <select name="Time zone range" id="select-plus-minus" bind:value={createUserClockMP}>
-                      <option value="+">+</option>
-                      <option value="-">-</option>
+                      <option value="1">+</option>
+                      <option value="-1">-</option>
                     </select>
                 
                       <select name="Time zone" id="select-time-zone" bind:value={createUserClockTz}>
