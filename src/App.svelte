@@ -3,6 +3,7 @@
   import viteLogo from '/vite.svg'
   import Counter from './lib/Counter.svelte'
   import {onMount} from 'svelte'
+  import { preventDefault } from 'svelte/legacy';
 
 
 
@@ -112,7 +113,6 @@ const monthForYear = [
 
 
 let clocks = $state({});
-
 let angles = $state({});
 let openPopUp = $state(false);
 let buttonPressedName = $state();
@@ -121,8 +121,8 @@ let buttonPressedName = $state();
 
 // Clock shown on user's page
 let clockLocalUserTimeShown = $state();
+let CreatedClockTimeShown = $state({});
 let todayDate = $state()
-let clockNumbersShown = $state();
 let clockNumbersMarsShown = $state();
 let planetRotation = $state();
 let menuFieldset = $state({
@@ -132,6 +132,12 @@ let menuFieldset = $state({
 let settingsMemory = $state({
   timeChart: "",
 });
+
+let createdUserClock = $state([])
+
+let createdUserClockName = $state("");
+let createUserClockMP = $state();
+let createUserClockTz = $state();
 
 
 
@@ -187,7 +193,34 @@ function localTimeUser() {
   todayDate = `${monthForYear[localMonthUser]} ${padForClock()(localDayUser)} ${padForClock()(localYearUser)}`;
 };
 
+// Clock creation by user
 
+function handleCreateUserClock (event) {
+  event.preventDefault();
+  const createdUserClockArray = {
+  nameClock: createdUserClockName,
+  timeZoneMP: createUserClockMP,
+  timeZoneChart: createUserClockTz
+  };
+  let currentCreatedEartUtc = new Date();
+  let newClockTimeUtcsecond = (currentCreatedEartUtc.getTime()) / 1000;
+  const hoursOnNewClock = Math.floor(((newClockTimeUtcsecond + (createUserClockMP + createUserClockTz)) % 86400) / 3600);
+  const minutesOnNewClock = Math.floor((newClockTimeUtcsecond %3600) / 60);
+  const secondOnNewClock = Math.floor(newClockTimeUtcsecond % 60);
+  CreatedClockTimeShown[createdUserClockName] = `${padForClock()(timeChartSwitch(hoursOnNewClock))} : ${padForClock()(minutesOnNewClock)} : ${padForClock()(secondOnNewClock)} ${amPmSetting(hoursOnNewClock)}`;
+
+  createdUserClock.push(createdUserClockArray);
+  createdUserClockName = "";
+  createUserClockMP = "";
+  createUserClockTz = "";
+};
+
+function handleDeleteClock(clockName) {
+  const deletedClockCreated = createdUserClock.filter(function(clocksCheck) {
+    return clocksCheck.nameClock !== clockName;
+  });
+  createdUserClock = deletedClockCreated
+};
 
 
 
@@ -375,6 +408,12 @@ onMount(allOnMountFunction);
           </div>
         {/if}
       {/each }
+      {#each createdUserClock as createdClock}
+        <div class={createdClock.nameClock}>
+            <p>{createdClock.nameClock}</p>
+            {CreatedClockTimeShown[createdClock.nameClock]}
+          </div>
+      {/each}
     </article>
 
     <article class="planets-list-area">
@@ -410,35 +449,43 @@ onMount(allOnMountFunction);
                 <option  value="12h time">12h time</option>
               </select>
             </div>
-              <div class="create-clock">
-                <p>Create a clock</p>
-                <input type="text" id="new-clock-name" required class="input-name" placeholder="Clock name">
-                <label for="select-plus-minus">Time zone</label>
-                <div class="select-time-zone">
-                  <select name="Time zone range" id="select-plus-minus" >
-                    <option value="+">+</option>
-                    <option value="-">-</option>
-                  </select>
-                  <form>
-                    <select name="Time zone" id="select-time-zone" >
-                      <option value="0">0</option>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                      <option value="6">6</option>
-                      <option value="7">7</option>
-                      <option value="8">8</option>
-                      <option value="9">9</option>
-                      <option value="10">10</option>
-                      <option value="11">11</option>
-                      <option value="12">12</option>
+              <form onsubmit={handleCreateUserClock}>
+                <div class="create-clock">
+                  <p>Create a clock</p>
+                  <input type="text" id="new-clock-name" required class="input-name" placeholder="Clock name" bind:value={createdUserClockName}>
+                  <label for="select-plus-minus">Time zone</label>
+                  <div class="select-time-zone">
+                    <select name="Time zone range" id="select-plus-minus" bind:value={createUserClockMP}>
+                      <option value="+">+</option>
+                      <option value="-">-</option>
                     </select>
-                  </form>
+                
+                      <select name="Time zone" id="select-time-zone" bind:value={createUserClockTz}>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                      </select>
+                
+                  </div>
+                  <button type="submit" aria-label="submit new clock" class="submit-button">Create</button>
+                  <div class="clock-created-list">
+                    {#each createdUserClock as clock}
+                      <p>{clock.nameClock}</p>
+                      <button type="button" name={clock.nameClock} aria-label="delete clock created" onclick={() => handleDeleteClock(clock.nameClock)}>X</button>
+                    {/each}
+                  </div>
                 </div>
-                <button type="submit" aria-label="submit new clock" class="submit-button">Create</button>
-              </div>
+              </form>
           </div>
         </fieldset>
     </article>
