@@ -215,6 +215,7 @@ function handleCreateUserClock (event) {
   savingSettings();
 };
 
+// Clock created by user shown
   function createdClorkShwon () {
   let currentCreatedEartUtc = new Date();
   createdUserClock.forEach((namedClock) => {
@@ -226,6 +227,7 @@ function handleCreateUserClock (event) {
   })
 };
 
+// Clock created by user deletion
 function handleDeleteClock(clockName) {
   const deletedClockCreated = createdUserClock.filter(function(clocksCheck) {
     return clocksCheck.nameClock !== clockName;
@@ -326,21 +328,26 @@ function closePlanetInformation() {
   openPopUp = false;
 };
 
+// Close the description pop-up when clicking out of the pop-up
 function closePlanetInformationOut(event) {
   if (event.target.classList.contains("planet-description")) {
     closePlanetInformation();
   }
 };
 
+// To avoid closing the pop-up when clicking inside itself
+function handleModalClick(event) {
+    event.stopPropagation();
+  }
+
+// Close the description pop-up when press "Enter" or "Space" key
 function keyDownPopUp (event) {
-  if (event.key === "Enter" || event.key === " " || event.ket === "Esc") {
+  if (event.key === "Enter" || event.key === " ") {
     closePlanetInformation();
   }
 }
 
-function handleModalClick(event) {
-    event.stopPropagation();
-  }
+
 
 
 // Time refresh set to 1s
@@ -356,8 +363,8 @@ setInterval(clockMarsTime, 1000);
 setInterval(planetsRotation, 1000);
 setInterval(createdClorkShwon, 1000);
 
-// Localestorage to keep selected clock shown
 
+// Localestorage to keep selected clock shown
 
 function savingSettings() {
   localStorage.setItem("settings", JSON.stringify(settingsMemory));
@@ -414,7 +421,9 @@ onMount(allOnMountFunction);
 </script>
 
 <main class="clock-all-page">
-<container class="clock-and-selector">
+  <container class="clock-and-selector">
+
+    <!-- Planets clock watch shown on top of the screen -->
     <article class="planets-clock">
       {#each allPlanetsOfSolarSystem as planet}
         {#if planet.name === "Earth" && planet.showClock === true}
@@ -468,6 +477,8 @@ onMount(allOnMountFunction);
         <fieldset class= "settingsFieldset" style="display: {menuFieldset.displaySettings}" >
           <legend>Settings</legend>
           <div class="all-settings-window">
+
+            <!-- Choice of the time chart, between 12h and 24h for the clocks watch-->
             <div class="time-chart-choice">
               <label for="clock-type" >Clock convert</label>
               <select name="clock-convert" id="clock-type" bind:value={settingsMemory.timeChart} onchange={savingSettings}>
@@ -475,6 +486,8 @@ onMount(allOnMountFunction);
                 <option  value="12h time">12h time</option>
               </select>
             </div>
+
+            <!-- Choice of the clock background -->
             <div class="select-clock-background">
               <p>Clock watch</p>
               <select name="background-selector" bind:value={settingsMemory.bckGround} onchange={savingSettings}>
@@ -485,6 +498,8 @@ onMount(allOnMountFunction);
                 <option value="/ramon-number-line.png">Clock 4</option>
               </select>
             </div>
+
+            <!-- Creation of  user's clock watch-->
               <form onsubmit={handleCreateUserClock}>
                 <div class="create-clock">
                   <p>Create a clock</p>
@@ -543,35 +558,36 @@ onMount(allOnMountFunction);
 
 <!-- planets watch type clock area -->
   <container class="planets-clocks" style="background-image: url({settingsMemory.bckGround})">
+
+      <!-- Description of planet when planet clicked -->
+      {#if openPopUp}
+        <div class="planet-description" role="button" onclick={closePlanetInformationOut} onkeydown={keyDownPopUp} tabindex="0">
+          <button onclick={handleModalClick} aria-label="place which do not close"></button>
+          <div class="inside-planet-description" role="document">
+            <div class="pop-up-button-container"><button type="button" class="pop-up-button" aria-label="close the pop-up" onclick={closePlanetInformation}>X</button></div>
+            <div class="pop-up-overlay">
+              {#each allPlanetDescription as planetDescription}
+                {#if planetDescription.name === buttonPressedName}
+                <p style="color: var(--{planetDescription.name})">{planetDescription.name}, {planetDescription.nickname}</p>
+                <ul class="pop-up-text">
+                  <li>{planetDescription.description1}</li>
+                  <li>{planetDescription.description2}</li>
+                </ul>
+                <a href={planetDescription.link} aria-label="link to wikipedia for ${planetDescription.name}">More information on Wikipedia</a>
+                {/if}
+              {/each}
+            </div>
+          </div>
+        </div>
+      {/if}
+
+      <!-- Planets rotating area -->
     <div class="Sun">
       <div class="sun-button-all">
         <div class="clockpic"></div>
         <button type="button" aria-label="sun button" class="sun-button" onclick={() => showPlanetInformation("Sun")}></button>
         <p class="sun-name">Sun</p>
       </div>
-
-      <!-- Description of planet when planet clicked -->
-      {#if openPopUp}
-
-        <div class="planet-description" role="button" onclick={closePlanetInformationOut} onkeydown={keyDownPopUp} tabindex="0">
-            <button onclick={handleModalClick} aria-label="place which do not close"></button>
-            <div class="inside-planet-description" role="document">
-              <div class="pop-up-button-container"><button type="button" class="pop-up-button" aria-label="close the pop-up" onclick={closePlanetInformation}>X</button></div>
-              <div class="pop-up-overlay">
-                {#each allPlanetDescription as planetDescription}
-                  {#if planetDescription.name === buttonPressedName}
-                  <p style="color: var(--{planetDescription.name})">{planetDescription.name}, {planetDescription.nickname}</p>
-                  <ul class="pop-up-text">
-                    <li>{planetDescription.description1}</li>
-                    <li>{planetDescription.description2}</li>
-                  </ul>
-                  <a href={planetDescription.link} aria-label="link to wikipedia for ${planetDescription.name}">More information on Wikipedia</a>
-                  {/if}
-                {/each}
-              </div>
-            </div>
-          </div>
-      {/if}
 
       {#each allPlanetsOfSolarSystem as planetTurning}
         <div class="all-planet-clock-{planetTurning.name}" style="transform: rotate({angles[planetTurning.name]}deg)">
@@ -603,7 +619,7 @@ onMount(allOnMountFunction);
 
 
 main {
-  background-image: url(./assets/a3aad14fdb499346d74950a51429026a.jpg);
+  background-image: url(/a3aad14fdb499346d74950a51429026a.jpg);
   color: white;
   font-size: 1.3rem;
   line-height: 0.3rem;
@@ -715,6 +731,7 @@ width: 80%;
 /* Planets rotation area */
 
 .planets-clocks {
+  position: relative;
   height: 75vh;
   display: flex;
   justify-content: center;
@@ -728,16 +745,16 @@ width: 80%;
 }
 
 .planet-description {
+position: absolute;
   width: 100vh;
-  height: 100vh;
+  height: 75vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .inside-planet-description {
-  position: fixed;
-  transform: rotate(90deg);
+  position: absolute;
   width: 75vh;
   height: 35vh;
   background-color: rgba(0, 0, 0, 0.8);
