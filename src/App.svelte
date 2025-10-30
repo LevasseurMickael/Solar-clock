@@ -562,7 +562,6 @@ onMount(allOnMountFunction);
     <!-- Description of planet when planet clicked -->
     {#if openPopUp}
     <div class="planet-description" role="button" onclick={closePlanetInformationOut} onkeydown={keyDownPopUp} tabindex="0">
-      <button onclick={handleModalClick} aria-label="place which do not close"></button>
       <div class="inside-planet-description" role="document">
         <div class="pop-up-button-container"><button type="button" class="pop-up-button" aria-label="close the pop-up" onclick={closePlanetInformation}>X</button></div>
         <div class="pop-up-overlay">
@@ -623,8 +622,10 @@ onMount(allOnMountFunction);
     color: white;
     font-size: 1.3rem;
     line-height: 0.3rem;
-    height: 100vh;
-    width: 100vh;
+    min-height: 100vh;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
   }
   
   
@@ -632,15 +633,16 @@ onMount(allOnMountFunction);
   .clock-and-selector {
     display: flex;
     height: 25vh;
-    width: 100vh;
+    width: 100%;
     justify-content: space-between;
   }
   
   .planets-clock {
     display: flex;
     flex-wrap: wrap;
-    width: 100%;
+    width: 80%;
     justify-content: center;
+    gap: 0.5rem;
   }
   
   .Mercury, .Venus, .Earth, .Mars, .Jupiter, .Saturn,.Uranus, .Neptune, .created-clocks {
@@ -658,10 +660,7 @@ onMount(allOnMountFunction);
   
   /* Menu selector */
   
-  .menu-tabs {
-    display: flex;
-    justify-content: center;
-  }
+  
   
   .tab-links {
     font-size: 0.6rem;
@@ -669,12 +668,21 @@ onMount(allOnMountFunction);
     margin: 0.3rem 0.3rem 0 0.3rem;
     padding: 5px 20px 5px 20px;
   }
-  
+
+  .menu-tabs {
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+  }
   
   .planets-list-area {
     font-size: 1rem;
     line-height: 1rem;
-    width: 20vh;
+    width: 20%;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    z-index: 9999;
   }
   .planets-list {
     display: flex;
@@ -745,52 +753,59 @@ onMount(allOnMountFunction);
   }
   
   .planet-description {
-    position: absolute;
-    width: 100vh;
-    height: 75vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
   }
   
   .inside-planet-description {
-    position: absolute;
-    width: 75vh;
-    height: 35vh;
+    position: relative;
+    width: 90%;
+    max-width: 75vh;
+    height: auto;
+    min-height: 35vh;
+    max-height: 80vh;
     background-color: rgba(0, 0, 0, 0.8);
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
     z-index: 500;
+    padding: 1rem;
+    overflow-y: auto;
   }
   
   .pop-up-button-container {
     display: flex;
-    height: 100%;
+    justify-content: flex-end;
     width: 100%;
-    justify-content: end;
   }
   
   .pop-up-button {
-    position: relative;
-    align-self: flex-start;
     background-color: darkred;
     color: white;
     z-index: 1000;
+    margin-bottom: 0.5rem;
   }
   
   
   .pop-up-overlay {
-    position: absolute;
+    position: relative;
     width: 100%;
-    height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     font-size: 1rem;
     line-height: 1.5rem;
+    padding: 1rem;
+    flex: 1;
   }
   
   .pop-up-text {
@@ -810,6 +825,7 @@ onMount(allOnMountFunction);
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     transform: rotate(90deg);
   }
   
@@ -826,7 +842,6 @@ onMount(allOnMountFunction);
   
   .planet-and-text {
     transform: rotate(90deg);
-    
   }
   
   .all-planet-clock-Mercury {
@@ -938,5 +953,185 @@ onMount(allOnMountFunction);
     border-radius: 50%;
   }
   
+  
+  /* MEDIA QUERIES POUR LA RESPONSIVITÉ */
+  
+  /* Tablettes et petits écrans */
+  @media (max-width: 1024px) {
+    main {
+      font-size: 1.1rem;
+      width: 100vw;
+    }
+    
+    .planets-clocks {
+      background-size: 500px;
+      height: 75vh;
+    }
+    
+    .all-planet-clock-Mercury { margin-left: 50px; transform-origin: -50px; }
+    .all-planet-clock-Venus { margin-left: 75px; transform-origin: -75px; }
+    .all-planet-clock-Earth { margin-left: 105px; transform-origin: -105px; }
+    .all-planet-clock-Mars { margin-left: 130px; transform-origin: -130px; }
+    .all-planet-clock-Jupiter { margin-left: 150px; transform-origin: -150px; }
+    .all-planet-clock-Saturn { margin-left: 190px; transform-origin: -190px; }
+    .all-planet-clock-Uranus { margin-left: 220px; transform-origin: -220px; }
+    .all-planet-clock-Neptune { margin-left: 245px; transform-origin: -245px; }
+  }
+  
+  /* Smartphones */
+  @media (max-width: 768px) {
+    main {
+      font-size: 1rem;
+      line-height: 0.5rem;
+    }
+    
+    .clock-and-selector {
+      flex-direction: column;
+      height: 25vh;
+    }
+    
+    .planets-list-area {
+      width: 100%;
+      max-width: 100%;
+    }
+    
+    .planets-clock {
+      font-size: 0.8rem;
+      gap: 0.3rem;
+      width: 100%;
+    }
+    
+    .Mercury, .Venus, .Earth, .Mars, .Jupiter, .Saturn,.Uranus, .Neptune, .created-clocks {
+      padding: 0.5rem 0.6rem;
+    }
+    
+    .tab-links {
+      font-size: 0.9rem;
+      padding: 8px 15px;
+    }
+    
+    .planets-clocks {
+      background-size: 350px;
+      height: 75vh;
+    }
+    
+    .sun-button {
+      height: 40px;
+      width: 40px;
+    }
+    
+    .all-planet-clock-Mercury { margin-left: 35px; transform-origin: -35px; }
+    .all-planet-clock-Venus { margin-left: 55px; transform-origin: -55px; }
+    .all-planet-clock-Earth { margin-left: 75px; transform-origin: -75px; }
+    .all-planet-clock-Mars { margin-left: 95px; transform-origin: -95px; }
+    .all-planet-clock-Jupiter { margin-left: 110px; transform-origin: -110px; }
+    .all-planet-clock-Saturn { margin-left: 140px; transform-origin: -140px; }
+    .all-planet-clock-Uranus { margin-left: 165px; transform-origin: -165px; }
+    .all-planet-clock-Neptune { margin-left: 185px; transform-origin: -185px; }
+    
+    .Mercury-clock { height: 8px; width: 8px; }
+    .Venus-clock { height: 15px; width: 15px; }
+    .Earth-clock { height: 17px; width: 17px; }
+    .Mars-clock { height: 10px; width: 10px; }
+    .Jupiter-clock { height: 30px; width: 30px; }
+    .Saturn-clock { height: 26px; width: 26px; }
+    .Uranus-clock { height: 14px; width: 14px; }
+    .Neptune-clock { height: 13px; width: 13px; }
+    
+    .inside-planet-description {
+      width: 95%;
+      padding: 0.5rem;
+    }
+    
+    .pop-up-overlay {
+      font-size: 0.85rem;
+      line-height: 1.3rem;
+    }
+    
+    .pop-up-text {
+      margin: 0.5rem;
+      padding: 0.5rem;
+    }
+    .all-settings-window {
+      align-items: start;
+    }
+  }
+  
+  /* Très petits smartphones */
+  @media (max-width: 480px) {
+    main {
+      font-size: 0.9rem;
+    }
+    
+    .planets-clock {
+      font-size: 0.7rem;
+    }
+    
+    .tab-links {
+      font-size: 0.8rem;
+      padding: 6px 12px;
+      margin: 0.2rem;
+    }
+    
+    .planets-clocks {
+      background-size: 280px;
+      height: 45vh;
+      min-height: 350px;
+    }
+    
+    .sun-button {
+      height: 30px;
+      width: 30px;
+    }
+    
+    .all-planet-clock-Mercury { margin-left: 28px; transform-origin: -28px; }
+    .all-planet-clock-Venus { margin-left: 42px; transform-origin: -42px; }
+    .all-planet-clock-Earth { margin-left: 58px; transform-origin: -58px; }
+    .all-planet-clock-Mars { margin-left: 72px; transform-origin: -72px; }
+    .all-planet-clock-Jupiter { margin-left: 85px; transform-origin: -85px; }
+    .all-planet-clock-Saturn { margin-left: 108px; transform-origin: -108px; }
+    .all-planet-clock-Uranus { margin-left: 126px; transform-origin: -126px; }
+    .all-planet-clock-Neptune { margin-left: 140px; transform-origin: -140px; }
+    
+    .Mercury-clock { height: 6px; width: 6px; }
+    .Venus-clock { height: 12px; width: 12px; }
+    .Earth-clock { height: 14px; width: 14px; }
+    .Mars-clock { height: 8px; width: 8px; }
+    .Jupiter-clock { height: 24px; width: 24px; }
+    .Saturn-clock { height: 20px; width: 20px; }
+    .Uranus-clock { height: 11px; width: 11px; }
+    .Neptune-clock { height: 10px; width: 10px; }
+    
+    .all-settings-window {
+      font-size: 0.7rem;
+    }
+    
+    .input-name {
+      width: 90%;
+    }
+    
+    .pop-up-overlay {
+      font-size: 0.75rem;
+      line-height: 1.2rem;
+      padding: 0.5rem;
+    }
+    
+    .planet-and-text p {
+      font-size: 0.65rem;
+    }
+  }
+  
+  /* Mode paysage pour smartphones */
+  @media (max-width: 896px) and (orientation: landscape) {
+    .clock-and-selector {
+      height: auto;
+      min-height: 20vh;
+    }
+    
+    .planets-clocks {
+      height: 80vh;
+      font-size: 0.7rem;
+    }
+  }
   
 </style>
